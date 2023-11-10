@@ -1,0 +1,39 @@
+======== TO-DO ========
+
+What is this about?
+    [] this program is a pokemon simulator
+
+What can you do?
+    [] catch pokemons with random set of either master, ultra, great, or regular balls
+    [] showcase any of your catches
+    [] gain xp (more xp better pokemon)
+    [] maybe battle?
+    [] maybe write and read from extern file?
+
+ADT's?
+    [] struct Ball
+    [] struct Pokemon
+    [] struct Pokemon_caught_list
+    [] struct Player 
+       --> m_pokemon_list? :: a linked list of the pokemons caught so each catch will give a pokemon
+
+    ------ PROGRAM FLOW ----------------------------------------
+
+    get player {10 normal balls} -> show menu {
+                            {display name and showcased pokemon}
+                             1 : catch pokemon >> 
+                                {
+                                            {display pokemon name and type}
+                                  1 : throw 
+                                  2 : run  
+                                }   
+                             2 : showcase a catch >>
+                                {
+                                            {display list of pokemons and their stats e.g: "Rayquaza Dragon/Flying LEGENDARY}
+
+                                    choose number : 
+                                    type q to go back to menu : 
+
+                                } 
+                             3 : Quit
+                             } 
