@@ -74,7 +74,7 @@ int main() {
     Pokemon* p_pokemons = &pokemons[0];
     bool _has_init = false;
 
-    char* version = "v0.0.1";
+    char* version = "v0.0.2";
     system("cls");
     welcome(version);
     
@@ -99,8 +99,20 @@ int main() {
                     _init_pokemons_list(p_pokemons); 
                     _has_init = true;
                 }
+                 const unsigned short int MAX_SLEEP_INTERVAL = 8;
+                 unsigned short int random_sleep_interval = rand() % MAX_SLEEP_INTERVAL;
+                 bool _done_walking = false;
+                 while(!_done_walking) {
+                    sleep(2);
+                    printf("Walking... \n");
+                    sleep(MAX_SLEEP_INTERVAL);
+                    _done_walking = true;
+                 }
+                 
                  Pokemon* random_pokemon = gen_rand_pokemon(p_pokemons, NUM_OF_POKEMONS);
-                 printf("%s", random_pokemon->name);
+                 printf("** YOU ENCOUNTERED : %s **\n", random_pokemon->name);
+                 printf("1 : catch \n 2 : run\nEnter [1] or [2] : ");
+
                 getch();
             break;
             case 2 :
@@ -155,6 +167,11 @@ Player* get_player() {
    char* p_input = fgets(input, INPUT_BUFFER, stdin);
    strtok(p_input, "\n");
    new_player->username = malloc(strlen(p_input) + 1);
+   if(new_player->username == NULL) {
+    fprintf(stderr, "Mallocation failure :: new_player->username");
+    free(new_player->username);
+    exit(1);
+   }
    strcpy(new_player->username, p_input);
    printf("YOU ENTERED : %s \n", new_player->username);
    
@@ -306,7 +323,7 @@ Ball* create_pokeball(char* type, unsigned short int modifier) {
         fprintf(stderr, "Failed mallocation for new_ball");
         free(new_ball->type);
         free(new_ball);
-        return NULL;
+        exit(1);
     }
 
     strcpy(new_ball->type , type);
@@ -319,6 +336,15 @@ BallNode* _init_ball_llist() {
     BallNode* first_node = malloc(sizeof(BallNode));
     BallNode* second_node = malloc(sizeof(BallNode));
     BallNode* third_node = malloc(sizeof(BallNode));
+
+    if(head == NULL || first_node == NULL || second_node == NULL || third_node == NULL) {
+        fprintf(stderr, "Mallocation failure :: _init_ball_llist");
+        free(head);
+        free(first_node);
+        free(second_node);
+        free(third_node);
+        exit(1);
+    }
 
     Ball* starter_pokeball = create_pokeball("pokeball", 1.5);
     Ball* starter_greatball = create_pokeball("greatball", 3);
@@ -349,6 +375,17 @@ void disp_inv_ball_list(BallNode* head) {
 }
 
 Pokemon* gen_rand_pokemon(Pokemon* p_pokemons, unsigned short int size) {
-    return p_pokemons + (rand() % size);
+    unsigned short int random_index = rand() % size;
+    while((p_pokemons + random_index)->is_legendary) {
+        const unsigned short int LEGENDARY_THRESHOLD = 100;
+        unsigned short int max = 1000;
+        unsigned short int curtail_randomizer = rand() % max;
+        if(curtail_randomizer <= LEGENDARY_THRESHOLD) {
+            return p_pokemons + random_index;
+        } else {
+            random_index = rand() % size;
+        }
+    }
+    return p_pokemons + random_index;
 }
 
