@@ -6,6 +6,7 @@
 #include <time.h>
 #define BALL_BASE_VAL 10
 #define INPUT_BUFFER 256
+#define NUM_OF_POKEMONS 20
 
 typedef struct Ball {
     char* type;
@@ -41,12 +42,23 @@ typedef struct Player {
 
 /* [FUNCTIONAL PROTOTYPES]*/
 
+ // [displays / menu]
 void welcome(char* version);
 unsigned short int get_menu(Player* player);
+void disp_inv_ball_list(BallNode* head);
+
+//[input function]
 Player* get_player();
-void _init_pokemons_list(Pokemon* p_pokemons);
+
+//[constructors]
 Ball* create_pokeball(char* type, unsigned short int modifier);
+
+//[initializers]
+void _init_pokemons_list(Pokemon* p_pokemons);
 BallNode* _init_ball_llist();
+
+//[generators]
+Pokemon* gen_rand_pokemon(Pokemon* p_pokemons, unsigned short int size);
 
 
 /* 
@@ -58,24 +70,20 @@ BallNode* _init_ball_llist();
 
 int main() {
     Player* player = malloc(sizeof(Player));
-    Pokemon pokemons[20];
+    Pokemon pokemons[NUM_OF_POKEMONS];
     Pokemon* p_pokemons = &pokemons[0];
-    
+    bool _has_init = false;
 
-    char* version = "0.0.1v";
+    char* version = "v0.0.1";
     system("cls");
     welcome(version);
     
     player = get_player();
     player->Bhead = _init_ball_llist();
-
     printf("\n ==== HERE ARE YOUR STARTING BALLS ==== \n");
-    int ball_inv_index = 1;
-    while(player->Bhead != NULL) {
-        printf("%d : %s \n", ball_inv_index, player->Bhead->data->type);
-        player->Bhead = player->Bhead->next;
-        ball_inv_index++;
-    }
+    disp_inv_ball_list(player->Bhead);
+
+    
     printf("press any key to go to the menu...");
     getch();
     unsigned short int menu_option = 0;
@@ -87,10 +95,12 @@ int main() {
         menu_option = get_menu(player);
         switch(menu_option) {
             case 1 :
-                
-                 _init_pokemons_list(p_pokemons);
-                 
-                
+                if(!_has_init) { 
+                    _init_pokemons_list(p_pokemons); 
+                    _has_init = true;
+                }
+                 Pokemon* random_pokemon = gen_rand_pokemon(p_pokemons, NUM_OF_POKEMONS);
+                 printf("%s", random_pokemon->name);
                 getch();
             break;
             case 2 :
@@ -99,7 +109,6 @@ int main() {
             break;
             case 3 :
                 printf("Thanks for playing!");
-                getch();
             break;
             default : {
                 printf("Invalid option try again : ");
@@ -142,7 +151,7 @@ Player* get_player() {
    
    char input[INPUT_BUFFER];
 
-   printf("\n What is your username : \n");
+   printf("\n\n\n\n What is your username : \n");
    char* p_input = fgets(input, INPUT_BUFFER, stdin);
    strtok(p_input, "\n");
    new_player->username = malloc(strlen(p_input) + 1);
@@ -276,7 +285,7 @@ void _init_pokemons_list(Pokemon* p_pokemons) {
     p_pokemons[19].type = "Fairy";
     p_pokemons[19].is_legendary = false;
 
-    for(int i = 0; i < 20; i++) {
+    for(int i = 0; i < NUM_OF_POKEMONS; i++) {
         unsigned short int rand_mult;
         if(p_pokemons[i].is_legendary) {
             rand_mult = LEGENDARY_CONST * (rand() % (LEGENDARY_MAX - LEGENDARY_MIN) + LEGENDARY_MIN);
@@ -329,5 +338,17 @@ BallNode* _init_ball_llist() {
 
     return head;
 
+}
+
+void disp_inv_ball_list(BallNode* head) {
+    int ball_inv_amount = 1;
+    while(head != NULL) {
+        printf("%d x %s \n", ball_inv_amount, head->data->type);
+        head = head->next;
+    }
+}
+
+Pokemon* gen_rand_pokemon(Pokemon* p_pokemons, unsigned short int size) {
+    return p_pokemons + (rand() % size);
 }
 
