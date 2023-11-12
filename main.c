@@ -46,6 +46,7 @@ typedef struct Player {
 void welcome(char* version);
 unsigned short int get_menu(Player* player);
 void disp_inv_ball_list(BallNode* head);
+void disp_walking();
 
 //[input function]
 Player* get_player();
@@ -59,6 +60,10 @@ BallNode* _init_ball_llist();
 
 //[generators]
 Pokemon* gen_rand_pokemon(Pokemon* p_pokemons, unsigned short int size);
+
+//[actions]
+
+
 
 
 /* 
@@ -99,20 +104,11 @@ int main() {
                     _init_pokemons_list(p_pokemons); 
                     _has_init = true;
                 }
-                 const unsigned short int MAX_SLEEP_INTERVAL = 8;
-                 unsigned short int random_sleep_interval = rand() % MAX_SLEEP_INTERVAL;
-                 bool _done_walking = false;
-                 while(!_done_walking) {
-                    sleep(2);
-                    printf("Walking... \n");
-                    sleep(MAX_SLEEP_INTERVAL);
-                    _done_walking = true;
-                 }
-                 
+                 disp_walking();
                  Pokemon* random_pokemon = gen_rand_pokemon(p_pokemons, NUM_OF_POKEMONS);
                  printf("** YOU ENCOUNTERED : %s **\n", random_pokemon->name);
-                 printf("1 : catch \n 2 : run\nEnter [1] or [2] : ");
-
+                 printf("1 : catch \n2 : run\nEnter [1] or [2] : ");
+                 
                 getch();
             break;
             case 2 :
@@ -389,3 +385,15 @@ Pokemon* gen_rand_pokemon(Pokemon* p_pokemons, unsigned short int size) {
     return p_pokemons + random_index;
 }
 
+void disp_walking() {
+    const unsigned short int MAX_SLEEP_INTERVAL = 8;
+                 unsigned short int random_sleep_interval = rand() % MAX_SLEEP_INTERVAL;
+                 bool _done_walking = false;
+                 while(!_done_walking) {
+                    sleep(2);
+                    printf("Walking... \n");
+                    sleep(MAX_SLEEP_INTERVAL);
+                    _done_walking = true;
+                 }
+                 
+}
