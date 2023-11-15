@@ -33,7 +33,7 @@ typedef struct PokeNode {
 
 typedef struct Player {
     BallNode* Bhead; // [ball1 -> ball2 -> NULL]
-    PokeNode* Phead; 
+    PokeNode* Phead; // linked list of the pokemons the player has
     char* showcase;   
     char* username;
     char  id[9];
@@ -62,7 +62,16 @@ BallNode* _init_ball_llist();
 Pokemon* gen_rand_pokemon(Pokemon* p_pokemons, unsigned short int size);
 
 //[actions]
+Ball* choose_ball(BallNode* head, int ball_option) {
+    BallNode* curr = head;
+    int _iter = 1;
+    while(_iter != ball_option) {
+        curr = curr->next;
+        _iter++;
+    }
 
+    return curr->data;
+}
 
 
 
@@ -107,7 +116,57 @@ int main() {
                  disp_walking();
                  Pokemon* random_pokemon = gen_rand_pokemon(p_pokemons, NUM_OF_POKEMONS);
                  printf("** YOU ENCOUNTERED : %s **\n", random_pokemon->name);
-                 printf("1 : catch \n2 : run\nEnter [1] or [2] : ");
+
+                 int catch_option = 0;
+                 printf("[1] catch [2] run\n");
+                 scanf("%d", &catch_option);
+                 switch(catch_option) {
+                    case 1 :
+                        printf("\n=== CHOOSE A BALL TO USE ===\n");
+                        disp_inv_ball_list(player->Bhead);
+                        int ball_option = 0;
+                        scanf("%d", &ball_option);
+                        Ball* chosen_ball = choose_ball(player->Bhead, ball_option);
+                        printf("** You chose a %s with a catch chance of %hu ** \n", chosen_ball->type, chosen_ball->catch_chance);
+                        printf("[1] throw ball [2] change ball [3] run \n");
+                        int action = 0;
+
+                        scanf("%d", &action);
+                        while(action == 2) {
+                            disp_inv_ball_list(player->Bhead);
+                            scanf("%d", &ball_option);
+                            chosen_ball = choose_ball(player->Bhead, ball_option);
+                            printf("** You chose a %s with a catch chance of %hu ** \n", chosen_ball->type, chosen_ball->catch_chance);
+                            printf("[1] throw ball [2] change ball [3] run");
+                            scanf("%d", &action);
+                        }
+                        
+                        if(action == 1) {
+                            //throw
+                            if(chosen_ball->catch_chance >= random_pokemon->catch_difficulty) {
+                                printf("** YOU CAUGHT %s **", random_pokemon->name);
+                                printf("POKEMON { NAME : %s , TYPE : %s } HAS BEEN ADDED TO YOUR POKEDEX \n", random_pokemon->name, random_pokemon->type);
+                                //add to pokedex
+                            } else {
+                                printf("~~ MISSED ~~");
+                                //re throw or pokemon flees
+                            }
+                        } else if (action == 3) {
+                            //run
+                        }
+                        
+
+                    getch();
+                    break;
+                    case 2 :
+                    printf("** YOU RAN AWAY :: POKEMON FLED **");
+                    getch();
+                    break;
+                    default : printf("Invalid option try again : ");
+                    break; 
+
+
+                 }
                  
                 getch();
             break;
@@ -212,11 +271,7 @@ Player* get_player() {
 
 void _init_pokemons_list(Pokemon* p_pokemons) {
 
-    const unsigned short int LEGENDARY_CONST = 10;
-    const unsigned short int NORMAL_CONST = 5;
-    const unsigned short int LEGENDARY_MIN = 7; 
-    const unsigned short int LEGENDARY_MAX = 10;
-    const unsigned short int NORMAL_MIN_MAX_RANGE = 11;
+    
 
     p_pokemons[0].name = "Pikachu";
     p_pokemons[0].type = "Electric";
@@ -298,6 +353,12 @@ void _init_pokemons_list(Pokemon* p_pokemons) {
     p_pokemons[19].type = "Fairy";
     p_pokemons[19].is_legendary = false;
 
+    const unsigned short int LEGENDARY_CONST = 10;
+    const unsigned short int NORMAL_CONST = 5;
+    const unsigned short int LEGENDARY_MIN = 7; 
+    const unsigned short int LEGENDARY_MAX = 10;
+    const unsigned short int NORMAL_MIN_MAX_RANGE = 11;
+
     for(int i = 0; i < NUM_OF_POKEMONS; i++) {
         unsigned short int rand_mult;
         if(p_pokemons[i].is_legendary) {
@@ -364,9 +425,11 @@ BallNode* _init_ball_llist() {
 
 void disp_inv_ball_list(BallNode* head) {
     int ball_inv_amount = 1;
+    int index = 1;
     while(head != NULL) {
-        printf("%d x %s \n", ball_inv_amount, head->data->type);
+        printf("%d : %d x %s \n", index, ball_inv_amount, head->data->type);
         head = head->next;
+        index++;
     }
 }
 
