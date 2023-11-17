@@ -47,6 +47,9 @@ void welcome(char* version);
 unsigned short int get_menu(Player* player);
 void disp_inv_ball_list(BallNode* head);
 void disp_walking();
+void disp_pokemon(Pokemon* pokemon, unsigned short int index) {
+    printf("\n POKEMON %d { NAME : %s , TYPE : %s } \n", index, pokemon->name, pokemon->type);
+};
 
 //[input function]
 Player* get_player();
@@ -62,24 +65,13 @@ BallNode* _init_ball_llist();
 Pokemon* gen_rand_pokemon(Pokemon* p_pokemons, unsigned short int size);
 
 //[actions]
-Ball* choose_ball(BallNode* head, int ball_option) {
-    BallNode* curr = head;
-    int _iter = 1;
-    while(_iter != ball_option) {
-        curr = curr->next;
-        _iter++;
-    }
-
-    return curr->data;
-}
-
+Ball* choose_ball(BallNode* head, int ball_option);
+PokeNode* add_to_pokedex(Pokemon* pokemon, PokeNode* head);
 
 
 /* 
 ===== TO DO ====
-1 : implement catching
 2 : implement showcase
-
 */
 
 int main() {
@@ -87,6 +79,7 @@ int main() {
     Pokemon pokemons[NUM_OF_POKEMONS];
     Pokemon* p_pokemons = &pokemons[0];
     bool _has_init = false;
+    
 
     char* version = "v0.0.2";
     system("cls");
@@ -96,6 +89,7 @@ int main() {
     player->Bhead = _init_ball_llist();
     printf("\n ==== HERE ARE YOUR STARTING BALLS ==== \n");
     disp_inv_ball_list(player->Bhead);
+    player->Phead = NULL;
 
     
     printf("press any key to go to the menu...");
@@ -146,6 +140,7 @@ int main() {
                             if(chosen_ball->catch_chance >= random_pokemon->catch_difficulty) {
                                 printf("** YOU CAUGHT %s **", random_pokemon->name);
                                 printf("POKEMON { NAME : %s , TYPE : %s } HAS BEEN ADDED TO YOUR POKEDEX \n", random_pokemon->name, random_pokemon->type);
+                                player->Phead = add_to_pokedex(random_pokemon, player->Phead);
                                 //add to pokedex
                             } else {
                                 printf("~~ MISSED ~~");
@@ -171,7 +166,31 @@ int main() {
                 getch();
             break;
             case 2 :
-                printf("Showcase");
+                printf("\n === SHOWCASE === \n");
+                printf("[ CHOOSE A POKEMON ] \n");
+
+                if(player->Phead == NULL) {
+                    printf(":: NO POKEMONS IN POKEDEX CURRENTLY :: \n");
+                } else {
+                    int showcase_index = 1;
+                    PokeNode* tmp = player->Phead;
+                    int showcase_choice = 0;
+
+                    while(tmp != NULL) {
+                        disp_pokemon(tmp->data, showcase_index);
+                        tmp = tmp->next;
+                        showcase_index++;
+                    }
+
+                    printf("ENTER A POKEMON NUMBER TO SHOWCASE : ");
+                    scanf("%d", &showcase_choice);
+
+                    //add_to_showcase();
+
+                }
+
+
+               
                 getch(); 
             break;
             case 3 :
@@ -459,4 +478,36 @@ void disp_walking() {
                     _done_walking = true;
                  }
                  
+}
+
+
+Ball* choose_ball(BallNode* head, int ball_option) {
+    BallNode* curr = head;
+    int _iter = 1;
+    while(_iter != ball_option) {
+        curr = curr->next;
+        _iter++;
+    }
+
+    return curr->data;
+}
+
+PokeNode* add_to_pokedex(Pokemon* pokemon, PokeNode* head) {
+    PokeNode* new_node = malloc(sizeof(PokeNode));
+    new_node->data = pokemon;
+    new_node->next = NULL;
+
+    if(head == NULL) {
+        head = new_node;
+    } else {
+        PokeNode* tmp = malloc(sizeof(PokeNode));
+        tmp = head;
+        while(tmp->next != NULL) {
+            tmp = tmp->next;
+        }
+        tmp->next = new_node;
+
+
+    }
+    return head;
 }
