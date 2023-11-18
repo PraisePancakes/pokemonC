@@ -47,9 +47,7 @@ void welcome(char* version);
 unsigned short int get_menu(Player* player);
 void disp_inv_ball_list(BallNode* head);
 void disp_walking();
-void disp_pokemon(Pokemon* pokemon, unsigned short int index) {
-    printf("\n POKEMON %d { NAME : %s , TYPE : %s } \n", index, pokemon->name, pokemon->type);
-};
+void disp_pokemon(Pokemon* pokemon, unsigned short int index);
 
 //[input function]
 Player* get_player();
@@ -68,14 +66,18 @@ Pokemon* gen_rand_pokemon(Pokemon* p_pokemons, unsigned short int size);
 Ball* choose_ball(BallNode* head, int ball_option);
 PokeNode* add_to_pokedex(Pokemon* pokemon, PokeNode* head);
 
+void add_to_showcase(Player* player, int showcase_option);
+
+
 
 /* 
 ===== TO DO ====
-2 : implement showcase
+1 : refactor and dry up code
 */
 
 int main() {
     Player* player = malloc(sizeof(Player));
+    player->showcase = NULL;
     Pokemon pokemons[NUM_OF_POKEMONS];
     Pokemon* p_pokemons = &pokemons[0];
     bool _has_init = false;
@@ -96,7 +98,7 @@ int main() {
     getch();
     unsigned short int menu_option = 0;
     const unsigned short int MENU_EXIT = 3;
-
+    
     while(menu_option != MENU_EXIT) {
         system("cls");
         fflush(stdin);
@@ -160,15 +162,15 @@ int main() {
                     default : printf("Invalid option try again : ");
                     break; 
 
-
+                   
                  }
-                 
+                
                 getch();
             break;
             case 2 :
                 printf("\n === SHOWCASE === \n");
                 printf("[ CHOOSE A POKEMON ] \n");
-
+                
                 if(player->Phead == NULL) {
                     printf(":: NO POKEMONS IN POKEDEX CURRENTLY :: \n");
                 } else {
@@ -184,12 +186,14 @@ int main() {
 
                     printf("ENTER A POKEMON NUMBER TO SHOWCASE : ");
                     scanf("%d", &showcase_choice);
-
-                    //add_to_showcase();
-
+                    while(showcase_choice >= showcase_index) {
+                        printf(":: ERROR CHOICE OUT OF RANGE RE-ENTER \n");
+                        scanf("%d", &showcase_choice);
+                    }
+                    
+                    add_to_showcase(player, showcase_choice);
+                    
                 }
-
-
                
                 getch(); 
             break;
@@ -220,10 +224,9 @@ void welcome(char* version) {
 
 unsigned short int get_menu(Player* player) {
     unsigned short int option = 0;
-    printf("\n === POKEMON C ===\t\t\tUSER { username : %s, id : %s, xp : %d, showcase : TBA }\n ", player->username, player->id, player->xp);
+    printf("\n === POKEMON C ===\t\t\tUSER { username : %s, id : %s, xp : %d, showcase : %s }\n ", player->username, player->id, player->xp, player->showcase);
     printf("1 : CATCH \n 2 : SHOWCASE \n 3 : EXIT \n");
     scanf("%hu", &option);
-
     return option;
 
 }
@@ -234,6 +237,8 @@ Player* get_player() {
    new_player->xp = 0;
    new_player->Bhead = NULL;
    new_player->Phead = NULL;
+   new_player->showcase = malloc(4);
+   strcpy(new_player->showcase, "TBA");
    
    char input[INPUT_BUFFER];
 
@@ -468,7 +473,7 @@ Pokemon* gen_rand_pokemon(Pokemon* p_pokemons, unsigned short int size) {
 }
 
 void disp_walking() {
-    const unsigned short int MAX_SLEEP_INTERVAL = 8;
+    const unsigned short int MAX_SLEEP_INTERVAL = 4;
                  unsigned short int random_sleep_interval = rand() % MAX_SLEEP_INTERVAL;
                  bool _done_walking = false;
                  while(!_done_walking) {
@@ -511,3 +516,29 @@ PokeNode* add_to_pokedex(Pokemon* pokemon, PokeNode* head) {
     }
     return head;
 }
+
+
+void disp_pokemon(Pokemon* pokemon, unsigned short int index) {
+    printf("\n POKEMON %d { NAME : %s , TYPE : %s } \n", index, pokemon->name, pokemon->type);
+};
+
+void add_to_showcase(Player* player, int showcase_option) {
+    int _iter = 1;
+    PokeNode* tmp = player->Phead;
+    printf("SHOWCASE OPT: %d", showcase_option);
+    while (_iter != showcase_option) {
+        tmp = tmp->next;
+        _iter++;
+    }
+    
+    free(player->showcase); // Free existing showcase memory if it exists
+    player->showcase = strdup(tmp->data->name);
+    if (player->showcase == NULL) {
+        fprintf(stderr, "Memory allocation failed for showcase");
+        exit(1);
+    }
+
+    
+}
+
+
