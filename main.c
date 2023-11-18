@@ -94,7 +94,7 @@ int main() {
     bool _has_init = false;
     
 
-    char* version = "v0.0.8 beta";
+    char* version = "v0.0.8 alpha";
     system("cls");
     welcome(version);
     
