@@ -40,6 +40,9 @@ typedef struct Player {
     int xp;
 } Player;
 
+// EXIT CODES 
+const unsigned short int EXIT_MALLOC_FAILURE = 2;
+
 /* [FUNCTIONAL PROTOTYPES]*/
 
  // [displays / menu]
@@ -65,10 +68,11 @@ Pokemon* gen_rand_pokemon(Pokemon* p_pokemons, unsigned short int size);
 //[actions]
 Ball* choose_ball(BallNode* head, int ball_option);
 PokeNode* add_to_pokedex(Pokemon* pokemon, PokeNode* head);
-
 void add_to_showcase(Player* player, int showcase_option);
 
-
+//[DEALLOCATORS]
+void free_pokedex(Player* player);
+void free_pokeballs(Player* player);
 
 /* 
 ===== TO DO ====
@@ -77,6 +81,13 @@ void add_to_showcase(Player* player, int showcase_option);
 
 int main() {
     Player* player = malloc(sizeof(Player));
+
+    if(player == NULL) {
+        fprintf(stderr, "ERROR :: MEM ALLOC FAILED FOR PLAYER \n");
+        free(player);
+        exit(EXIT_MALLOC_FAILURE);
+    }
+
     player->showcase = NULL;
     Pokemon pokemons[NUM_OF_POKEMONS];
     Pokemon* p_pokemons = &pokemons[0];
@@ -198,7 +209,17 @@ int main() {
                 getch(); 
             break;
             case 3 :
+                free_pokedex(player);
+                free_pokeballs(player);
+                player->Phead = NULL;
+                player->Bhead = NULL;
+                free(player->showcase);
+                free(player->username);
+                
+                free(player);
                 printf("Thanks for playing!");
+                
+                
             break;
             default : {
                 printf("Invalid option try again : ");
@@ -234,10 +255,24 @@ unsigned short int get_menu(Player* player) {
 Player* get_player() {
    srand(time(NULL));
    Player* new_player = malloc(sizeof(Player));
+
+   if(new_player == NULL) {
+    fprintf(stderr, "ERROR :: MALLOC FAILED FOR NEW_PLAYER");
+    free(new_player);
+    exit(EXIT_MALLOC_FAILURE);
+   }
+
    new_player->xp = 0;
    new_player->Bhead = NULL;
    new_player->Phead = NULL;
    new_player->showcase = malloc(4);
+
+   if(new_player->showcase == NULL) {
+    fprintf(stderr, "ERROR :: MALLOC FAILED FOR NEW_PLAYER->SHOWCASE");
+    free(new_player->showcase);
+    exit(EXIT_MALLOC_FAILURE);
+
+   }
    strcpy(new_player->showcase, "TBA");
    
    char input[INPUT_BUFFER];
@@ -247,9 +282,9 @@ Player* get_player() {
    strtok(p_input, "\n");
    new_player->username = malloc(strlen(p_input) + 1);
    if(new_player->username == NULL) {
-    fprintf(stderr, "Mallocation failure :: new_player->username");
+    fprintf(stderr, "ERROR :: MALLOC FAILED FOR NEW_PLAYER->USERNAME");
     free(new_player->username);
-    exit(1);
+    exit(EXIT_MALLOC_FAILURE);
    }
    strcpy(new_player->username, p_input);
    printf("YOU ENTERED : %s \n", new_player->username);
@@ -404,7 +439,7 @@ Ball* create_pokeball(char* type, unsigned short int modifier) {
         fprintf(stderr, "Failed mallocation for new_ball");
         free(new_ball->type);
         free(new_ball);
-        exit(1);
+        exit(EXIT_MALLOC_FAILURE);
     }
 
     strcpy(new_ball->type , type);
@@ -419,12 +454,12 @@ BallNode* _init_ball_llist() {
     BallNode* third_node = malloc(sizeof(BallNode));
 
     if(head == NULL || first_node == NULL || second_node == NULL || third_node == NULL) {
-        fprintf(stderr, "Mallocation failure :: _init_ball_llist");
+        fprintf(stderr, "ERROR :: MALLOC FAILED FOR _INIT_BALL_LLIST");
         free(head);
         free(first_node);
         free(second_node);
         free(third_node);
-        exit(1);
+        exit(EXIT_MALLOC_FAILURE);
     }
 
     Ball* starter_pokeball = create_pokeball("pokeball", 1.5);
@@ -441,8 +476,6 @@ BallNode* _init_ball_llist() {
     third_node->data = starter_masterball;
     third_node->next = NULL;
     
-    BallNode* tmp = head;
-
     return head;
 
 }
@@ -535,10 +568,43 @@ void add_to_showcase(Player* player, int showcase_option) {
     player->showcase = strdup(tmp->data->name);
     if (player->showcase == NULL) {
         fprintf(stderr, "Memory allocation failed for showcase");
-        exit(1);
+        exit(EXIT_MALLOC_FAILURE);
     }
 
     
+}
+
+void free_pokedex(Player* player) {
+
+    PokeNode* tmp = player->Phead;
+    if(tmp == NULL) {
+        fprintf(stderr, "ERROR :: MEM ALLOC FAILED FOR TMP \n");
+        free(tmp);
+        exit(EXIT_MALLOC_FAILURE);
+    }
+
+    while(tmp != NULL) {
+        free(tmp->data->name);
+        free(tmp->data->type);
+        tmp = tmp->next;
+    }
+}
+
+void free_pokeballs(Player* player) {
+    BallNode* tmp = player->Bhead;
+
+    if(tmp == NULL) {
+        fprintf(stderr, "ERROR :: MEM ALLOC FAILED FOR TMP \n");
+        free(tmp);
+        exit(EXIT_MALLOC_FAILURE);
+    }
+
+    while(tmp != NULL) {
+        free(tmp->data->type);
+        free(tmp->data->catch_chance);
+        free(tmp->data->modifier);
+        tmp = tmp->next;
+    }
 }
 
 
