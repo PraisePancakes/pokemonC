@@ -94,7 +94,7 @@ int main() {
     bool _has_init = false;
     
 
-    char* version = "v0.0.2";
+    char* version = "v0.0.8 beta";
     system("cls");
     welcome(version);
     
@@ -173,7 +173,6 @@ int main() {
                     default : printf("Invalid option try again : ");
                     break; 
 
-                   
                  }
                 
                 getch();
