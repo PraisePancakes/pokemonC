@@ -4,6 +4,8 @@
 #include <conio.h>
 #include <string.h>
 #include <time.h>
+#include <windows.h>
+
 #define BALL_BASE_VAL 10
 #define INPUT_BUFFER 256
 #define NUM_OF_POKEMONS 20
@@ -69,6 +71,35 @@ Pokemon* gen_rand_pokemon(Pokemon* p_pokemons, unsigned short int size);
 Ball* choose_ball(BallNode* head, int ball_option);
 PokeNode* add_to_pokedex(Pokemon* pokemon, PokeNode* head);
 void add_to_showcase(Player* player, int showcase_option);
+BallNode* remove_ball(BallNode* head, int ball_option) {
+    BallNode* curr = head;
+    BallNode* prev = head;
+
+    if(ball_option != 1) {
+        int _iter = 1;
+        while(_iter != ball_option - 1) {
+            prev = prev->next;
+            _iter++;
+        }
+        printf("prev : %s", prev->data->type);
+        _iter = 1;
+        while(_iter != ball_option) {
+            curr = curr->next;
+            _iter++;
+        }
+        printf("curr (remove) : %s", curr->data->type);
+        prev->next = curr->next;
+        curr->next = NULL;
+        free(curr);
+    } else if(ball_option == 1) {
+        curr = curr->next;
+        prev->next = NULL;
+        free(prev);
+        head = curr;
+    }
+
+    return head;
+}
 
 //[DEALLOCATORS]
 void free_pokedex(Player* player);
@@ -159,6 +190,7 @@ int main() {
                                 printf("~~ MISSED ~~");
                                 //re throw or pokemon flees
                             }
+                            player->Bhead = remove_ball(player->Bhead, ball_option);
                         } else if (action == 3) {
                             //run
                         }
@@ -481,11 +513,11 @@ BallNode* _init_ball_llist() {
 
 void disp_inv_ball_list(BallNode* head) {
     int ball_inv_amount = 1;
-    int index = 1;
+    int _iter = 1;
     while(head != NULL) {
-        printf("%d : %d x %s \n", index, ball_inv_amount, head->data->type);
+        printf("%d : %d x %s \n", _iter, ball_inv_amount, head->data->type);
         head = head->next;
-        index++;
+        _iter++;
     }
 }
 
@@ -600,8 +632,6 @@ void free_pokeballs(Player* player) {
 
     while(tmp != NULL) {
         free(tmp->data->type);
-        free(tmp->data->catch_chance);
-        free(tmp->data->modifier);
         tmp = tmp->next;
     }
 }
