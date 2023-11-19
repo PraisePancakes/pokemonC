@@ -4,7 +4,7 @@
 #include <conio.h>
 #include <string.h>
 #include <time.h>
-#include <windows.h>
+#include <unistd.h>
 
 #define BALL_BASE_VAL 10
 #define INPUT_BUFFER 256
@@ -71,35 +71,7 @@ Pokemon* gen_rand_pokemon(Pokemon* p_pokemons, unsigned short int size);
 Ball* choose_ball(BallNode* head, int ball_option);
 PokeNode* add_to_pokedex(Pokemon* pokemon, PokeNode* head);
 void add_to_showcase(Player* player, int showcase_option);
-BallNode* remove_ball(BallNode* head, int ball_option) {
-    BallNode* curr = head;
-    BallNode* prev = head;
-
-    if(ball_option != 1) {
-        int _iter = 1;
-        while(_iter != ball_option - 1) {
-            prev = prev->next;
-            _iter++;
-        }
-        printf("prev : %s", prev->data->type);
-        _iter = 1;
-        while(_iter != ball_option) {
-            curr = curr->next;
-            _iter++;
-        }
-        printf("curr (remove) : %s", curr->data->type);
-        prev->next = curr->next;
-        curr->next = NULL;
-        free(curr);
-    } else if(ball_option == 1) {
-        curr = curr->next;
-        prev->next = NULL;
-        free(prev);
-        head = curr;
-    }
-
-    return head;
-}
+BallNode* remove_ball(BallNode* head, int ball_option);
 
 //[DEALLOCATORS]
 void free_pokedex(Player* player);
@@ -108,6 +80,7 @@ void free_pokeballs(Player* player);
 /* 
 ===== TO DO ====
 1 : refactor and dry up code
+2 : implement store
 */
 
 int main() {
@@ -125,7 +98,7 @@ int main() {
     bool _has_init = false;
     
 
-    char* version = "v0.0.8 alpha";
+    char* version = "v0.0.9 alpha";
     system("cls");
     welcome(version);
     
@@ -155,6 +128,10 @@ int main() {
                  Pokemon* random_pokemon = gen_rand_pokemon(p_pokemons, NUM_OF_POKEMONS);
                  printf("** YOU ENCOUNTERED : %s **\n", random_pokemon->name);
 
+                if(player->Bhead == NULL) {
+                    printf(":: YOU DO NOT HAVE ANY POKEBALLS VISIT THE STORE TO BUY MORE :: \n");
+                    break;
+                }
                  int catch_option = 0;
                  printf("[1] catch [2] run\n");
                  scanf("%d", &catch_option);
@@ -167,8 +144,8 @@ int main() {
                         Ball* chosen_ball = choose_ball(player->Bhead, ball_option);
                         printf("** You chose a %s with a catch chance of %hu ** \n", chosen_ball->type, chosen_ball->catch_chance);
                         printf("[1] throw ball [2] change ball [3] run \n");
-                        int action = 0;
 
+                        int action = 0;
                         scanf("%d", &action);
                         while(action == 2) {
                             disp_inv_ball_list(player->Bhead);
@@ -192,7 +169,8 @@ int main() {
                             }
                             player->Bhead = remove_ball(player->Bhead, ball_option);
                         } else if (action == 3) {
-                            //run
+                            printf(":: YOU RAN AWAY :: \n");
+                            printf("press any key to go to the menu...");
                         }
                         
 
@@ -608,12 +586,6 @@ void add_to_showcase(Player* player, int showcase_option) {
 void free_pokedex(Player* player) {
 
     PokeNode* tmp = player->Phead;
-    if(tmp == NULL) {
-        fprintf(stderr, "ERROR :: MEM ALLOC FAILED FOR TMP \n");
-        free(tmp);
-        exit(EXIT_MALLOC_FAILURE);
-    }
-
     while(tmp != NULL) {
         free(tmp->data->name);
         free(tmp->data->type);
@@ -623,17 +595,40 @@ void free_pokedex(Player* player) {
 
 void free_pokeballs(Player* player) {
     BallNode* tmp = player->Bhead;
-
-    if(tmp == NULL) {
-        fprintf(stderr, "ERROR :: MEM ALLOC FAILED FOR TMP \n");
-        free(tmp);
-        exit(EXIT_MALLOC_FAILURE);
-    }
-
     while(tmp != NULL) {
         free(tmp->data->type);
         tmp = tmp->next;
     }
+}
+
+BallNode* remove_ball(BallNode* head, int ball_option) {
+    BallNode* curr = head;
+    BallNode* prev = head;
+
+    if(ball_option != 1) {
+        int _iter = 1;
+        while(_iter != ball_option - 1) {
+            prev = prev->next;
+            _iter++;
+        }
+        printf("prev : %s", prev->data->type);
+        _iter = 1;
+        while(_iter != ball_option) {
+            curr = curr->next;
+            _iter++;
+        }
+        printf("curr (remove) : %s", curr->data->type);
+        prev->next = curr->next;
+        curr->next = NULL;
+        free(curr);
+    } else if(ball_option == 1) {
+        curr = curr->next;
+        prev->next = NULL;
+        free(prev);
+        head = curr;
+    }
+
+    return head;
 }
 
 
