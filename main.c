@@ -46,6 +46,27 @@ typedef struct Player {
     unsigned short int points;
 } Player;
 
+//[ENUMS]
+enum Colors {
+    BLACK = 0,
+    BLUE = 1,
+    GREEN = 2,
+    AQUA = 3,
+    RED = 4,
+    PURPLE = 5,
+    YELLOW = 6,
+    WHITE = 7,
+    GRAY = 8,
+    LIGHT_BLUE = 9,
+    LIGHT_GREEN = 0xA,   // 0xA is equivalent to 10 in decimal
+    LIGHT_AQUA = 0xB,    // 0xB is equivalent to 11 in decimal
+    LIGHT_RED = 0xC,     // 0xC is equivalent to 12 in decimal
+    LIGHT_PURPLE = 0xD,   // 0xD is equivalent to 13 in decimal
+    LIGHT_YELLOW = 0xE,   // 0xE is equivalent to 14 in decimal
+    BRIGHT_WHITE = 0xF,   // 0xF is equivalent to 15 in decimal
+    DEFAULT = 0x07
+};
+
 // EXIT CODES 
 const unsigned short int EXIT_MALLOC_FAILURE = 2;
 
@@ -53,8 +74,8 @@ const unsigned short int EXIT_MALLOC_FAILURE = 2;
 
  // [displays / menu]
 void welcome(char* version);
-unsigned short int get_menu(Player* player);
-void disp_inv_ball_list(BallNode* head);
+unsigned short int get_menu(HANDLE hc, Player* player);
+void disp_inv_ball_list(HANDLE hc, BallNode* head);
 void disp_walking();
 void disp_pokemon(Pokemon* pokemon, unsigned short int index);
 void disp_shop(Player* player) {
@@ -63,7 +84,7 @@ void disp_shop(Player* player) {
 }
 
 //[input function]
-Player* get_player(hc);
+Player* get_player(HANDLE hc);
 
 //[constructors]
 Ball* create_pokeball(char* type, unsigned short int modifier);
@@ -80,7 +101,7 @@ Ball* choose_ball(BallNode* head, int ball_option);
 PokeNode* add_to_pokedex(Pokemon* pokemon, PokeNode* head);
 void add_to_showcase(Player* player, int showcase_option);
 BallNode* remove_ball(BallNode* head, int ball_option);
-void throw_ball(Ball* chosen_ball , Pokemon* random_pokemon, Player* player);
+void throw_ball(HANDLE hc, Ball* chosen_ball , Pokemon* random_pokemon, Player* player);
 
 //[DEALLOCATORS]
 void free_pokedex(Player* player);
@@ -94,8 +115,6 @@ void free_pokeballs(Player* player);
 
 int main() {
     HANDLE hc = GetStdHandle(STD_OUTPUT_HANDLE);
-    
-
     Player* player = malloc(sizeof(Player));
     
     if(player == NULL) {
@@ -116,8 +135,10 @@ int main() {
     
     player = get_player(hc);
     player->Bhead = _init_ball_llist();
+    SetConsoleTextAttribute(hc, YELLOW);
     printf("\n ==== HERE ARE YOUR STARTING BALLS ==== \n");
-    disp_inv_ball_list(player->Bhead);
+    disp_inv_ball_list(hc, player->Bhead);
+    
     player->Phead = NULL;
 
     
@@ -130,7 +151,7 @@ int main() {
         system("cls");
         fflush(stdin);
         
-        menu_option = get_menu(player);
+        menu_option = get_menu(hc, player);
         switch(menu_option) {
             case 1 :
                 if(!_has_init) { 
@@ -151,7 +172,7 @@ int main() {
                  switch(catch_option) {
                     case 1 :
                         printf("\n=== CHOOSE A BALL TO USE ===\n");
-                        disp_inv_ball_list(player->Bhead);
+                        disp_inv_ball_list(hc, player->Bhead);
                         int ball_option = 0;
                         scanf("%d", &ball_option);
                         Ball* chosen_ball = choose_ball(player->Bhead, ball_option);
@@ -161,7 +182,7 @@ int main() {
 
                         scanf("%d", &action);
                         while(action == 2) {
-                            disp_inv_ball_list(player->Bhead);
+                            disp_inv_ball_list(hc, player->Bhead);
                             scanf("%d", &ball_option);
                             chosen_ball = choose_ball(player->Bhead, ball_option);
                             printf("** You chose a %s with a catch chance of %hu ** \n", chosen_ball->type, chosen_ball->catch_chance);
@@ -171,7 +192,7 @@ int main() {
                         
                         if(action == 1) {
                             //throw
-                            throw_ball(chosen_ball, random_pokemon, player);
+                            throw_ball(hc, chosen_ball, random_pokemon, player);
                             player->Bhead = remove_ball(player->Bhead, ball_option);
                         } else if (action == 3) {
                             printf(":: YOU RAN AWAY :: \n");
@@ -261,16 +282,20 @@ void welcome(char* version) {
     getch();
 }
 
-unsigned short int get_menu(Player* player) {
+unsigned short int get_menu(HANDLE hc, Player* player) {
     unsigned short int option = 0;
-    printf("\n === POKEMON C ===\t\t\tUSER { username : %s, id : %s, xp : %hu, points : %hu, showcase : %s }\n ", player->username, player->id, player->xp, player->points, player->showcase);
+    printf("\n === POKEMON C ===\t\t\t");
+    SetConsoleTextAttribute(hc, BLUE | FOREGROUND_INTENSITY);
+    printf("USER { username : %s, id : %s, xp : %hu, points : %hu, showcase : %s }\n ", player->username, player->id, player->xp, player->points, player->showcase);
+    SetConsoleTextAttribute(hc, BRIGHT_WHITE | FOREGROUND_INTENSITY);
     printf("1 : CATCH \n 2 : SHOWCASE \n 3 : ITEM SHOP \n 4 : EXIT \n");
+    SetConsoleTextAttribute(hc, DEFAULT);
     scanf("%hu", &option);
     return option;
 
 }
 
-Player* get_player(hc) {
+Player* get_player(HANDLE hc) {
    srand(time(NULL));
    Player* new_player = malloc(sizeof(Player));
 
@@ -327,12 +352,12 @@ Player* get_player(hc) {
 
    
    strcpy(new_player->id, uuid);
-   SetConsoleTextAttribute(hc,FOREGROUND_BLUE | FOREGROUND_INTENSITY);
+   SetConsoleTextAttribute(hc, BLUE | FOREGROUND_INTENSITY);
    printf("USER : %s \n", new_player->username);
    printf("YOUR UUID : %s \n", new_player->id);
    printf("XP : %hu \n", new_player->xp);
    printf("POINTS : %hu ", new_player->points);
-   SetConsoleTextAttribute(hc, 0x07);
+   SetConsoleTextAttribute(hc, DEFAULT);
    getch();
 
    return new_player;
@@ -503,14 +528,17 @@ BallNode* _init_ball_llist() {
 
 }
 
-void disp_inv_ball_list(BallNode* head) {
+void disp_inv_ball_list(HANDLE hc, BallNode* head) {
     int ball_inv_amount = 1;
     int _iter = 1;
+    
     while(head != NULL) {
+        SetConsoleTextAttribute(hc, BRIGHT_WHITE | FOREGROUND_INTENSITY);
         printf("%d : %d x %s \n", _iter, ball_inv_amount, head->data->type);
         head = head->next;
         _iter++;
     }
+     SetConsoleTextAttribute(hc, DEFAULT);
 }
 
 Pokemon* gen_rand_pokemon(Pokemon* p_pokemons, unsigned short int size) {
@@ -646,10 +674,8 @@ BallNode* remove_ball(BallNode* head, int ball_option) {
     return head;
 }
 
-void throw_ball(Ball* chosen_ball , Pokemon* random_pokemon, Player* player) {
+void throw_ball(HANDLE hc, Ball* chosen_ball , Pokemon* random_pokemon, Player* player) {
      if(chosen_ball->catch_chance >= random_pokemon->catch_difficulty) {
-         printf("** YOU CAUGHT %s **", random_pokemon->name);
-         printf("POKEMON { NAME : %s , TYPE : %s } HAS BEEN ADDED TO YOUR POKEDEX \n", random_pokemon->name, random_pokemon->type);
          player->Phead = add_to_pokedex(random_pokemon, player->Phead);
          unsigned short int previous_xp = player->xp;
          unsigned short int previous_points = player->points;
@@ -660,7 +686,14 @@ void throw_ball(Ball* chosen_ball , Pokemon* random_pokemon, Player* player) {
             player->xp += random_pokemon->catch_difficulty * floor(player->xp / 2);
             player->points += random_pokemon->catch_difficulty + player->points + 50;
          }
+
+         SetConsoleTextAttribute(hc, 0xF | FOREGROUND_INTENSITY);
+         printf(" ** YOU CAUGHT %s ** POKEMON { NAME : %s , TYPE : %s } HAS BEEN ADDED TO YOUR POKEDEX \n ", random_pokemon->name , random_pokemon->name, random_pokemon->type);
+         SetConsoleTextAttribute(hc, 0x07);
+
+         SetConsoleTextAttribute(hc, FOREGROUND_GREEN | FOREGROUND_INTENSITY);
          printf("YOU GAINED %hu XP and %hu points!", abs(player->xp - previous_xp), abs(player->points - previous_points));
+         SetConsoleTextAttribute(hc, 0x07);
          
      } else {
         printf("~~ MISSED ~~");
