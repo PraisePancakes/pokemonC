@@ -5,6 +5,7 @@
 #include <string.h>
 #include <time.h>
 #include <unistd.h>
+#include <math.h>
 
 #define BALL_BASE_VAL 10
 #define INPUT_BUFFER 256
@@ -39,7 +40,8 @@ typedef struct Player {
     char* showcase;   
     char* username;
     char  id[9];
-    int xp;
+    unsigned short int xp;
+    unsigned short int points;
 } Player;
 
 // EXIT CODES 
@@ -53,6 +55,10 @@ unsigned short int get_menu(Player* player);
 void disp_inv_ball_list(BallNode* head);
 void disp_walking();
 void disp_pokemon(Pokemon* pokemon, unsigned short int index);
+void disp_shop(Player* player) {
+    printf("=== ITEM SHOP === \n [ YOU HAVE %hu POINTS ]\n", player->points);
+    printf("1 : BUY MORE BALLS \n");
+}
 
 //[input function]
 Player* get_player();
@@ -113,7 +119,7 @@ int main() {
     printf("press any key to go to the menu...");
     getch();
     unsigned short int menu_option = 0;
-    const unsigned short int MENU_EXIT = 3;
+    const unsigned short int MENU_EXIT = 4;
     
     while(menu_option != MENU_EXIT) {
         system("cls");
@@ -211,6 +217,10 @@ int main() {
                 getch(); 
             break;
             case 3 :
+                disp_shop(player);
+                getch();
+            break;
+            case 4 :
                 free_pokedex(player);
                 free_pokeballs(player);
                 player->Phead = NULL;
@@ -247,8 +257,8 @@ void welcome(char* version) {
 
 unsigned short int get_menu(Player* player) {
     unsigned short int option = 0;
-    printf("\n === POKEMON C ===\t\t\tUSER { username : %s, id : %s, xp : %d, showcase : %s }\n ", player->username, player->id, player->xp, player->showcase);
-    printf("1 : CATCH \n 2 : SHOWCASE \n 3 : EXIT \n");
+    printf("\n === POKEMON C ===\t\t\tUSER { username : %s, id : %s, xp : %hu, points : %hu, showcase : %s }\n ", player->username, player->id, player->xp, player->points, player->showcase);
+    printf("1 : CATCH \n 2 : SHOWCASE \n 3 : ITEM SHOP \n 4 : EXIT \n");
     scanf("%hu", &option);
     return option;
 
@@ -268,6 +278,7 @@ Player* get_player() {
    new_player->Bhead = NULL;
    new_player->Phead = NULL;
    new_player->showcase = malloc(4);
+   new_player->points = 0;
 
    if(new_player->showcase == NULL) {
     fprintf(stderr, "ERROR :: MALLOC FAILED FOR NEW_PLAYER->SHOWCASE");
@@ -311,7 +322,8 @@ Player* get_player() {
    
    strcpy(new_player->id, uuid);
    printf("YOUR UUID : %s \n", new_player->id);
-   printf("XP : %d", new_player->xp);
+   printf("XP : %hu \n", new_player->xp);
+   printf("POINTS : %hu \n", new_player->points);
    getch();
 
    return new_player;
@@ -628,18 +640,23 @@ void throw_ball(Ball* chosen_ball , Pokemon* random_pokemon, Player* player) {
          printf("** YOU CAUGHT %s **", random_pokemon->name);
          printf("POKEMON { NAME : %s , TYPE : %s } HAS BEEN ADDED TO YOUR POKEDEX \n", random_pokemon->name, random_pokemon->type);
          player->Phead = add_to_pokedex(random_pokemon, player->Phead);
-         int previous_xp = player->xp;
+         unsigned short int previous_xp = player->xp;
+         unsigned short int previous_points = player->points;
          if(player->xp == 0) {
             player->xp += random_pokemon->catch_difficulty + player->xp;
+            player->points += random_pokemon->catch_difficulty + player->points;
          } else {
             player->xp += random_pokemon->catch_difficulty * floor(player->xp / 2);
+            player->points += random_pokemon->catch_difficulty + player->points + 50;
          }
-         printf("YOU GAINED %d XP !", abs(player->xp - previous_xp));
+         printf("YOU GAINED %hu XP and %hu points!", abs(player->xp - previous_xp), abs(player->points - previous_points));
          
      } else {
         printf("~~ MISSED ~~");
          //re throw or pokemon flees
      }
 }
+
+
 
 
