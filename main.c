@@ -72,6 +72,7 @@ Ball* choose_ball(BallNode* head, int ball_option);
 PokeNode* add_to_pokedex(Pokemon* pokemon, PokeNode* head);
 void add_to_showcase(Player* player, int showcase_option);
 BallNode* remove_ball(BallNode* head, int ball_option);
+void throw_ball(Ball* chosen_ball , Pokemon* random_pokemon, Player* player);
 
 //[DEALLOCATORS]
 void free_pokedex(Player* player);
@@ -143,9 +144,9 @@ int main() {
                         scanf("%d", &ball_option);
                         Ball* chosen_ball = choose_ball(player->Bhead, ball_option);
                         printf("** You chose a %s with a catch chance of %hu ** \n", chosen_ball->type, chosen_ball->catch_chance);
+                        int action = 0;
                         printf("[1] throw ball [2] change ball [3] run \n");
 
-                        int action = 0;
                         scanf("%d", &action);
                         while(action == 2) {
                             disp_inv_ball_list(player->Bhead);
@@ -158,15 +159,7 @@ int main() {
                         
                         if(action == 1) {
                             //throw
-                            if(chosen_ball->catch_chance >= random_pokemon->catch_difficulty) {
-                                printf("** YOU CAUGHT %s **", random_pokemon->name);
-                                printf("POKEMON { NAME : %s , TYPE : %s } HAS BEEN ADDED TO YOUR POKEDEX \n", random_pokemon->name, random_pokemon->type);
-                                player->Phead = add_to_pokedex(random_pokemon, player->Phead);
-                                //add to pokedex
-                            } else {
-                                printf("~~ MISSED ~~");
-                                //re throw or pokemon flees
-                            }
+                            throw_ball(chosen_ball, random_pokemon, player);
                             player->Bhead = remove_ball(player->Bhead, ball_option);
                         } else if (action == 3) {
                             printf(":: YOU RAN AWAY :: \n");
@@ -516,17 +509,16 @@ Pokemon* gen_rand_pokemon(Pokemon* p_pokemons, unsigned short int size) {
 
 void disp_walking() {
     const unsigned short int MAX_SLEEP_INTERVAL = 4;
-                 unsigned short int random_sleep_interval = rand() % MAX_SLEEP_INTERVAL;
-                 bool _done_walking = false;
-                 while(!_done_walking) {
-                    sleep(2);
-                    printf("Walking... \n");
-                    sleep(MAX_SLEEP_INTERVAL);
-                    _done_walking = true;
-                 }
+    unsigned short int random_sleep_interval = rand() % MAX_SLEEP_INTERVAL;
+    bool _done_walking = false;
+    while(!_done_walking) {
+        sleep(2);
+        printf("Walking... \n");
+        sleep(MAX_SLEEP_INTERVAL);
+        _done_walking = true;
+    }
                  
 }
-
 
 Ball* choose_ball(BallNode* head, int ball_option) {
     BallNode* curr = head;
@@ -611,13 +603,13 @@ BallNode* remove_ball(BallNode* head, int ball_option) {
             prev = prev->next;
             _iter++;
         }
-        printf("prev : %s", prev->data->type);
+
         _iter = 1;
         while(_iter != ball_option) {
             curr = curr->next;
             _iter++;
         }
-        printf("curr (remove) : %s", curr->data->type);
+    
         prev->next = curr->next;
         curr->next = NULL;
         free(curr);
@@ -629,6 +621,25 @@ BallNode* remove_ball(BallNode* head, int ball_option) {
     }
 
     return head;
+}
+
+void throw_ball(Ball* chosen_ball , Pokemon* random_pokemon, Player* player) {
+     if(chosen_ball->catch_chance >= random_pokemon->catch_difficulty) {
+         printf("** YOU CAUGHT %s **", random_pokemon->name);
+         printf("POKEMON { NAME : %s , TYPE : %s } HAS BEEN ADDED TO YOUR POKEDEX \n", random_pokemon->name, random_pokemon->type);
+         player->Phead = add_to_pokedex(random_pokemon, player->Phead);
+         int previous_xp = player->xp;
+         if(player->xp == 0) {
+            player->xp += random_pokemon->catch_difficulty + player->xp;
+         } else {
+            player->xp += random_pokemon->catch_difficulty * floor(player->xp / 2);
+         }
+         printf("YOU GAINED %d XP !", abs(player->xp - previous_xp));
+         
+     } else {
+        printf("~~ MISSED ~~");
+         //re throw or pokemon flees
+     }
 }
 
 
