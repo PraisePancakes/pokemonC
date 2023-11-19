@@ -6,6 +6,8 @@
 #include <time.h>
 #include <unistd.h>
 #include <math.h>
+#include <windows.h>
+
 
 #define BALL_BASE_VAL 10
 #define INPUT_BUFFER 256
@@ -61,7 +63,7 @@ void disp_shop(Player* player) {
 }
 
 //[input function]
-Player* get_player();
+Player* get_player(hc);
 
 //[constructors]
 Ball* create_pokeball(char* type, unsigned short int modifier);
@@ -91,8 +93,11 @@ void free_pokeballs(Player* player);
 */
 
 int main() {
-    Player* player = malloc(sizeof(Player));
+    HANDLE hc = GetStdHandle(STD_OUTPUT_HANDLE);
+    
 
+    Player* player = malloc(sizeof(Player));
+    
     if(player == NULL) {
         fprintf(stderr, "ERROR :: MEM ALLOC FAILED FOR PLAYER \n");
         free(player);
@@ -105,11 +110,11 @@ int main() {
     bool _has_init = false;
     
 
-    char* version = "v0.0.9 alpha";
+    char* version = "v0.1.0 alpha";
     system("cls");
     welcome(version);
     
-    player = get_player();
+    player = get_player(hc);
     player->Bhead = _init_ball_llist();
     printf("\n ==== HERE ARE YOUR STARTING BALLS ==== \n");
     disp_inv_ball_list(player->Bhead);
@@ -124,6 +129,7 @@ int main() {
     while(menu_option != MENU_EXIT) {
         system("cls");
         fflush(stdin);
+        
         menu_option = get_menu(player);
         switch(menu_option) {
             case 1 :
@@ -264,7 +270,7 @@ unsigned short int get_menu(Player* player) {
 
 }
 
-Player* get_player() {
+Player* get_player(hc) {
    srand(time(NULL));
    Player* new_player = malloc(sizeof(Player));
 
@@ -300,7 +306,7 @@ Player* get_player() {
     exit(EXIT_MALLOC_FAILURE);
    }
    strcpy(new_player->username, p_input);
-   printf("YOU ENTERED : %s \n", new_player->username);
+   
    
    char uuid[9];
    const unsigned short int MIN_ASCII_NUMBER = 48;
@@ -321,9 +327,12 @@ Player* get_player() {
 
    
    strcpy(new_player->id, uuid);
+   SetConsoleTextAttribute(hc,FOREGROUND_BLUE | FOREGROUND_INTENSITY);
+   printf("USER : %s \n", new_player->username);
    printf("YOUR UUID : %s \n", new_player->id);
    printf("XP : %hu \n", new_player->xp);
-   printf("POINTS : %hu \n", new_player->points);
+   printf("POINTS : %hu ", new_player->points);
+   SetConsoleTextAttribute(hc, 0x07);
    getch();
 
    return new_player;
@@ -524,7 +533,9 @@ void disp_walking() {
     unsigned short int random_sleep_interval = rand() % MAX_SLEEP_INTERVAL;
     bool _done_walking = false;
     while(!_done_walking) {
-        sleep(2);
+        sleep(1);
+        printf("Walking... \n");
+        sleep(1);
         printf("Walking... \n");
         sleep(MAX_SLEEP_INTERVAL);
         _done_walking = true;
