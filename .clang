@@ -1,0 +1,14 @@
+BasedOnStyle: Google
+AlignTrailingComments: 'true'
+AllowShortFunctionsOnASingleLine: None
+AllowShortIfStatementsOnASingleLine: Never
+BreakBeforeBraces: Attach
+ColumnLimit: '80'
+IndentCaseLabels: 'true'
+IndentWidth: '4'
+PointerAlignment: Left
+SpaceAfterCStyleCast: 'true'
+SpacesBeforeTrailingComments: '3'
+SpacesInParentheses: 'false'
+SpacesInSquareBrackets: 'false'
+UseTab: Never
