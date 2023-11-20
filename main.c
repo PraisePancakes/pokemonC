@@ -81,17 +81,37 @@ unsigned short int get_menu(Player *player);
 void disp_inv_ball_list(BallNode *head);
 void disp_walking();
 void disp_pokemon(Pokemon *pokemon, unsigned short int index);
-void disp_shop(Player *player) {
-  printf("=== ITEM SHOP === \n [ YOU HAVE %hu POINTS ]\n", player->points);
-  printf("!! COMING SOON !!");
-
+void disp_shop() {
+  printf("1 : More pokeballs \n");
+  printf("2 : Styles (COMING SOON) \n");
+  printf("3 : Return to menu \n");
   // printf("1 : BUY MORE BALLS \n");
+}
+
+void disp_ball_shop() {
+  printf("1 : Poke Balls \n");
+  printf("2 : Great Balls \n");
+  printf("3 : Ultra Balls \n");
+  printf("4 : Master Balls \n");
 }
 
 void style_printf_encountered(WORD text_color, Pokemon *pokemon);
 
 //[input function]
 Player *get_player();
+unsigned short int get_shop() {
+  unsigned short int option = 0;
+  disp_shop();
+  scanf("%hu", &option);
+  return option;
+};
+
+unsigned short int get_ball_shop() {
+  unsigned short int option = 0;
+  disp_ball_shop();
+  scanf("%hu", &option);
+  return option;
+}
 
 //[constructors]
 Ball *create_pokeball(char *type, unsigned short int modifier);
@@ -142,7 +162,7 @@ int main() {
   player = get_player();
   player->Bhead = _init_ball_llist();
   SetConsoleTextAttribute(hc, YELLOW);
-  printf("\n ==== HERE ARE YOUR STARTING BALLS ==== \n");
+  printf("\n =-=-= HERE ARE YOUR STARTING BALLS =-=-= \n");
   disp_inv_ball_list(player->Bhead);
 
   player->Phead = NULL;
@@ -218,7 +238,7 @@ int main() {
         getch();
         break;
       case 2:
-        printf("\n === SHOWCASE === \n");
+        printf("\n =-= SHOWCASE =-= \n");
         printf("[ CHOOSE A POKEMON ] \n");
 
         if (player->Phead == NULL) {
@@ -251,7 +271,18 @@ int main() {
         getch();
         break;
       case 3:
-        disp_shop(player);
+        printf("=-= ITEM SHOP =-= \n [ YOU HAVE %hu POINTS ]\n",
+               player->points);
+        unsigned short int shop_option = get_shop();
+        switch (shop_option) {
+          case 1:
+            printf("=-= BUY POKEBALLS =-= \n [ YOU HAVE %hu POINTS ]\n",
+                   player->points);
+            printf("=-= SELECT WHICH BALL YOU WOULD LIKE TO BUY =-= \n");
+            unsigned short int ball_buy_option = get_ball_shop();
+            getch();
+            break;
+        }
         getch();
         break;
       case 4:
@@ -277,7 +308,7 @@ int main() {
 }
 
 void welcome(char *version) {
-  printf("====== WELCOME TO POKEMON C %s ====== \n", version);
+  printf("=-=-=-= WELCOME TO POKEMON C %s =-=-=-= \n", version);
   printf("Pokemon C is a pokemon simulator\n");
   printf("[] catch pokemons\n[] showcase your pokemons\n");
   printf("press any key to begin ...");
@@ -286,7 +317,7 @@ void welcome(char *version) {
 
 unsigned short int get_menu(Player *player) {
   unsigned short int option = 0;
-  printf("\n === POKEMON C ===\t\t\t");
+  printf("\n =-=-= POKEMON C =-=-=\t\t\t");
   SetConsoleTextAttribute(hc, BLUE | FOREGROUND_INTENSITY);
   printf("USER { username : %s, id : %s, xp : %hu, points : %hu, showcase : %s "
          "}\n ",
