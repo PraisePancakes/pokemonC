@@ -70,21 +70,28 @@ enum Colors {
 // EXIT CODES 
 const unsigned short int EXIT_MALLOC_FAILURE = 2;
 
+//[HANDLERS]
+HANDLE hc;
+
 /* [FUNCTIONAL PROTOTYPES]*/
 
  // [displays / menu]
 void welcome(char* version);
-unsigned short int get_menu(HANDLE hc, Player* player);
-void disp_inv_ball_list(HANDLE hc, BallNode* head);
+unsigned short int get_menu(Player* player);
+void disp_inv_ball_list(BallNode* head);
 void disp_walking();
 void disp_pokemon(Pokemon* pokemon, unsigned short int index);
 void disp_shop(Player* player) {
     printf("=== ITEM SHOP === \n [ YOU HAVE %hu POINTS ]\n", player->points);
-    printf("1 : BUY MORE BALLS \n");
+    printf("!! COMING SOON !!");
+
+    //printf("1 : BUY MORE BALLS \n");
 }
 
+void style_printf_encountered(WORD text_color, Pokemon* pokemon);
+
 //[input function]
-Player* get_player(HANDLE hc);
+Player* get_player();
 
 //[constructors]
 Ball* create_pokeball(char* type, unsigned short int modifier);
@@ -97,11 +104,11 @@ BallNode* _init_ball_llist();
 Pokemon* gen_rand_pokemon(Pokemon* p_pokemons, unsigned short int size);
 
 //[actions]
-Ball* choose_ball(BallNode* head, int ball_option);
+Ball* choose_ball(Player* player, int* ball_option);
 PokeNode* add_to_pokedex(Pokemon* pokemon, PokeNode* head);
 void add_to_showcase(Player* player, int showcase_option);
 BallNode* remove_ball(BallNode* head, int ball_option);
-void throw_ball(HANDLE hc, Ball* chosen_ball , Pokemon* random_pokemon, Player* player);
+void throw_ball(Ball* chosen_ball , Pokemon* random_pokemon, Player* player);
 
 //[DEALLOCATORS]
 void free_pokedex(Player* player);
@@ -113,8 +120,11 @@ void free_pokeballs(Player* player);
 2 : implement store
 */
 
+
+
+
 int main() {
-    HANDLE hc = GetStdHandle(STD_OUTPUT_HANDLE);
+    hc = GetStdHandle(STD_OUTPUT_HANDLE);
     Player* player = malloc(sizeof(Player));
     
     if(player == NULL) {
@@ -129,15 +139,15 @@ int main() {
     bool _has_init = false;
     
 
-    char* version = "v0.1.0 alpha";
+    char* version = "v0.0.0-unreleased";
     system("cls");
     welcome(version);
     
-    player = get_player(hc);
+    player = get_player();
     player->Bhead = _init_ball_llist();
     SetConsoleTextAttribute(hc, YELLOW);
     printf("\n ==== HERE ARE YOUR STARTING BALLS ==== \n");
-    disp_inv_ball_list(hc, player->Bhead);
+    disp_inv_ball_list(player->Bhead);
     
     player->Phead = NULL;
 
@@ -151,7 +161,7 @@ int main() {
         system("cls");
         fflush(stdin);
         
-        menu_option = get_menu(hc, player);
+        menu_option = get_menu(player);
         switch(menu_option) {
             case 1 :
                 if(!_has_init) { 
@@ -160,7 +170,12 @@ int main() {
                 }
                  disp_walking();
                  Pokemon* random_pokemon = gen_rand_pokemon(p_pokemons, NUM_OF_POKEMONS);
-                 printf("** YOU ENCOUNTERED : %s **\n", random_pokemon->name);
+                 if(random_pokemon->is_legendary) {
+                    style_printf_encountered(YELLOW, random_pokemon);
+                 } else {
+                    style_printf_encountered(LIGHT_AQUA, random_pokemon);   
+                 }
+                
 
                 if(player->Bhead == NULL) {
                     printf(":: YOU DO NOT HAVE ANY POKEBALLS VISIT THE STORE TO BUY MORE :: \n");
@@ -170,32 +185,50 @@ int main() {
                  printf("[1] catch [2] run\n");
                  scanf("%d", &catch_option);
                  switch(catch_option) {
+                    /*
+                        -------- DRY UP ---------
+
+                        Ball* choose_ball(Player* player, int* ball_option) {
+                            disp_inv_ball_list(player->Bhead);
+                            option = 0;
+                            scanf("%d", &option);
+                            
+
+                            BallNode* curr = head;
+                            int _iter = 1;
+                            while(_iter != option) {
+                                curr = curr->next;
+                                _iter++;
+                            }
+
+                            *ball_option = option;
+                            printf("** You chose a %s with a catch chance of %hu ** \n", curr->type, curr->catch_chance);
+                            return curr->data;
+                        }
+                    
+                    */
                     case 1 :
                         printf("\n=== CHOOSE A BALL TO USE ===\n");
-                        disp_inv_ball_list(hc, player->Bhead);
                         int ball_option = 0;
-                        scanf("%d", &ball_option);
-                        Ball* chosen_ball = choose_ball(player->Bhead, ball_option);
-                        printf("** You chose a %s with a catch chance of %hu ** \n", chosen_ball->type, chosen_ball->catch_chance);
+                        Ball* chosen_ball = choose_ball(player, &ball_option);
+
                         int action = 0;
                         printf("[1] throw ball [2] change ball [3] run \n");
-
                         scanf("%d", &action);
                         while(action == 2) {
-                            disp_inv_ball_list(hc, player->Bhead);
-                            scanf("%d", &ball_option);
-                            chosen_ball = choose_ball(player->Bhead, ball_option);
-                            printf("** You chose a %s with a catch chance of %hu ** \n", chosen_ball->type, chosen_ball->catch_chance);
+                            chosen_ball = choose_ball(player, &ball_option);
                             printf("[1] throw ball [2] change ball [3] run");
                             scanf("%d", &action);
                         }
                         
                         if(action == 1) {
                             //throw
-                            throw_ball(hc, chosen_ball, random_pokemon, player);
+                            throw_ball(chosen_ball, random_pokemon, player);
                             player->Bhead = remove_ball(player->Bhead, ball_option);
                         } else if (action == 3) {
-                            printf(":: YOU RAN AWAY :: \n");
+                            SetConsoleTextAttribute(hc, RED | FOREGROUND_INTENSITY);
+                            printf("** YOU RAN AWAY :: POKEMON FLED **\n");
+                            SetConsoleTextAttribute(hc, DEFAULT);
                             printf("press any key to go to the menu...");
                         }
                         
@@ -203,7 +236,9 @@ int main() {
                     getch();
                     break;
                     case 2 :
+                    SetConsoleTextAttribute(hc, RED | FOREGROUND_INTENSITY);
                     printf("** YOU RAN AWAY :: POKEMON FLED **");
+                    SetConsoleTextAttribute(hc, DEFAULT);
                     getch();
                     break;
                     default : printf("Invalid option try again : ");
@@ -218,7 +253,9 @@ int main() {
                 printf("[ CHOOSE A POKEMON ] \n");
                 
                 if(player->Phead == NULL) {
+                    SetConsoleTextAttribute(hc, RED | FOREGROUND_INTENSITY);
                     printf(":: NO POKEMONS IN POKEDEX CURRENTLY :: \n");
+                    SetConsoleTextAttribute(hc, DEFAULT);
                 } else {
                     int showcase_index = 1;
                     PokeNode* tmp = player->Phead;
@@ -233,7 +270,9 @@ int main() {
                     printf("ENTER A POKEMON NUMBER TO SHOWCASE : ");
                     scanf("%d", &showcase_choice);
                     while(showcase_choice >= showcase_index) {
+                        SetConsoleTextAttribute(hc, RED | FOREGROUND_INTENSITY);
                         printf(":: ERROR CHOICE OUT OF RANGE RE-ENTER \n");
+                        SetConsoleTextAttribute(hc, DEFAULT);
                         scanf("%d", &showcase_choice);
                     }
                     
@@ -282,7 +321,7 @@ void welcome(char* version) {
     getch();
 }
 
-unsigned short int get_menu(HANDLE hc, Player* player) {
+unsigned short int get_menu(Player* player) {
     unsigned short int option = 0;
     printf("\n === POKEMON C ===\t\t\t");
     SetConsoleTextAttribute(hc, BLUE | FOREGROUND_INTENSITY);
@@ -295,7 +334,7 @@ unsigned short int get_menu(HANDLE hc, Player* player) {
 
 }
 
-Player* get_player(HANDLE hc) {
+Player* get_player() {
    srand(time(NULL));
    Player* new_player = malloc(sizeof(Player));
 
@@ -464,7 +503,8 @@ void _init_pokemons_list(Pokemon* p_pokemons) {
     const unsigned short int NORMAL_CONST = 5;
     const unsigned short int LEGENDARY_MIN = 7; 
     const unsigned short int LEGENDARY_MAX = 10;
-    const unsigned short int NORMAL_MIN_MAX_RANGE = 11;
+    const unsigned short int NORMAL_MIN_RANGE = 1;
+    const unsigned short int NORMAL_MAX_RANGE = 11;
 
     for(int i = 0; i < NUM_OF_POKEMONS; i++) {
         unsigned short int rand_mult;
@@ -472,7 +512,7 @@ void _init_pokemons_list(Pokemon* p_pokemons) {
             rand_mult = LEGENDARY_CONST * (rand() % (LEGENDARY_MAX - LEGENDARY_MIN) + LEGENDARY_MIN);
             p_pokemons[i].catch_difficulty = rand_mult;
         } else if(!p_pokemons[i].is_legendary) {
-            rand_mult = NORMAL_CONST * (rand() % NORMAL_MIN_MAX_RANGE);
+            rand_mult = NORMAL_CONST * (rand() % (NORMAL_MAX_RANGE - NORMAL_MIN_RANGE) + NORMAL_MIN_RANGE);
             p_pokemons[i].catch_difficulty = rand_mult;
         }
     }
@@ -528,7 +568,7 @@ BallNode* _init_ball_llist() {
 
 }
 
-void disp_inv_ball_list(HANDLE hc, BallNode* head) {
+void disp_inv_ball_list(BallNode* head) {
     int ball_inv_amount = 1;
     int _iter = 1;
     
@@ -571,15 +611,23 @@ void disp_walking() {
                  
 }
 
-Ball* choose_ball(BallNode* head, int ball_option) {
-    BallNode* curr = head;
+Ball* choose_ball(Player* player, int* ball_option) {
+    disp_inv_ball_list(player->Bhead);
+    int option = 0;
+    scanf("%d", &option);
+                            
+
+    BallNode* curr_ball = player->Bhead;
     int _iter = 1;
-    while(_iter != ball_option) {
-        curr = curr->next;
+    while(_iter != option) {
+        curr_ball = curr_ball->next;
         _iter++;
     }
 
-    return curr->data;
+    *ball_option = option;
+    printf("** You chose a %s with a catch chance of %hu ** \n", curr_ball->data->type, curr_ball->data->catch_chance);
+    return curr_ball->data;
+                            
 }
 
 PokeNode* add_to_pokedex(Pokemon* pokemon, PokeNode* head) {
@@ -674,7 +722,7 @@ BallNode* remove_ball(BallNode* head, int ball_option) {
     return head;
 }
 
-void throw_ball(HANDLE hc, Ball* chosen_ball , Pokemon* random_pokemon, Player* player) {
+void throw_ball(Ball* chosen_ball , Pokemon* random_pokemon, Player* player) {
      if(chosen_ball->catch_chance >= random_pokemon->catch_difficulty) {
          player->Phead = add_to_pokedex(random_pokemon, player->Phead);
          unsigned short int previous_xp = player->xp;
@@ -699,6 +747,12 @@ void throw_ball(HANDLE hc, Ball* chosen_ball , Pokemon* random_pokemon, Player* 
         printf("~~ MISSED ~~");
          //re throw or pokemon flees
      }
+}
+
+void style_printf_encountered(WORD text_color, Pokemon* pokemon) {
+        SetConsoleTextAttribute(hc, text_color | FOREGROUND_INTENSITY);
+        printf("** YOU ENCOUNTERED : %s **\n", pokemon->name);
+        SetConsoleTextAttribute(hc, DEFAULT);
 }
 
 
