@@ -12,38 +12,33 @@
 #define INPUT_BUFFER 256
 #define NUM_OF_POKEMONS 20
 
-typedef struct Ball
-{
+typedef struct Ball {
     char *type;
-    unsigned short int modifier;     // based on type 1.5 , 3 , 5 , 10
-    unsigned short int catch_chance; // base * modifier
+    unsigned short int modifier;       // based on type 1.5 , 3 , 5 , 10
+    unsigned short int catch_chance;   // base * modifier
 } Ball;
 
-typedef struct BallNode
-{
+typedef struct BallNode {
     Ball *data;
     struct BallNode *next;
 } BallNode;
 
-typedef struct Pokemon
-{
+typedef struct Pokemon {
     char *name;
     char *type;
     bool is_legendary;
-    unsigned short int catch_difficulty; // 10 - 100 , if ball catch_chance >=
-                                         // catch_difficulty ? success : fail
+    unsigned short int catch_difficulty;   // 10 - 100 , if ball catch_chance >=
+                                           // catch_difficulty ? success : fail
 } Pokemon;
 
-typedef struct PokeNode
-{
+typedef struct PokeNode {
     Pokemon *data;
     struct PokeNode *next;
 } PokeNode;
 
-typedef struct Player
-{
-    BallNode *Bhead; // [ball1 -> ball2 -> NULL]
-    PokeNode *Phead; // linked list of the pokemons the player has
+typedef struct Player {
+    BallNode *Bhead;   // [ball1 -> ball2 -> NULL]
+    PokeNode *Phead;   // linked list of the pokemons the player has
     char *showcase;
     char *username;
     char id[9];
@@ -52,8 +47,7 @@ typedef struct Player
 } Player;
 
 //[ENUMS]
-enum Colors
-{
+enum Colors {
     BLACK = 0,
     BLUE = 1,
     GREEN = 2,
@@ -64,12 +58,12 @@ enum Colors
     WHITE = 7,
     GRAY = 8,
     LIGHT_BLUE = 9,
-    LIGHT_GREEN = 0xA,  // 0xA is equivalent to 10 in decimal
-    LIGHT_AQUA = 0xB,   // 0xB is equivalent to 11 in decimal
-    LIGHT_RED = 0xC,    // 0xC is equivalent to 12 in decimal
-    LIGHT_PURPLE = 0xD, // 0xD is equivalent to 13 in decimal
-    LIGHT_YELLOW = 0xE, // 0xE is equivalent to 14 in decimal
-    BRIGHT_WHITE = 0xF, // 0xF is equivalent to 15 in decimal
+    LIGHT_GREEN = 0xA,    // 0xA is equivalent to 10 in decimal
+    LIGHT_AQUA = 0xB,     // 0xB is equivalent to 11 in decimal
+    LIGHT_RED = 0xC,      // 0xC is equivalent to 12 in decimal
+    LIGHT_PURPLE = 0xD,   // 0xD is equivalent to 13 in decimal
+    LIGHT_YELLOW = 0xE,   // 0xE is equivalent to 14 in decimal
+    BRIGHT_WHITE = 0xF,   // 0xF is equivalent to 15 in decimal
     DEFAULT = 0x07
 };
 
@@ -87,8 +81,7 @@ unsigned short int get_menu(Player *player);
 void disp_inv_ball_list(BallNode *head);
 void disp_walking();
 void disp_pokemon(Pokemon *pokemon, unsigned short int index);
-void disp_shop(Player *player)
-{
+void disp_shop(Player *player) {
     printf("=== ITEM SHOP === \n [ YOU HAVE %hu POINTS ]\n", player->points);
     printf("!! COMING SOON !!");
 
@@ -127,13 +120,11 @@ void free_pokeballs(Player *player);
 2 : implement store
 */
 
-int main()
-{
+int main() {
     hc = GetStdHandle(STD_OUTPUT_HANDLE);
     Player *player = malloc(sizeof(Player));
 
-    if (player == NULL)
-    {
+    if (player == NULL) {
         fprintf(stderr, "ERROR :: MEM ALLOC FAILED FOR PLAYER \n");
         free(player);
         exit(EXIT_MALLOC_FAILURE);
@@ -161,155 +152,136 @@ int main()
     unsigned short int menu_option = 0;
     const unsigned short int MENU_EXIT = 4;
 
-    while (menu_option != MENU_EXIT)
-    {
+    while (menu_option != MENU_EXIT) {
         system("cls");
         fflush(stdin);
 
         menu_option = get_menu(player);
-        switch (menu_option)
-        {
-        case 1:
-            if (!_has_init)
-            {
-                _init_pokemons_list(p_pokemons);
-                _has_init = true;
-            }
-            disp_walking();
-            Pokemon *random_pokemon =
-                gen_rand_pokemon(p_pokemons, NUM_OF_POKEMONS);
-            if (random_pokemon->is_legendary)
-            {
-                style_printf_encountered(YELLOW, random_pokemon);
-            }
-            else
-            {
-                style_printf_encountered(LIGHT_AQUA, random_pokemon);
-            }
-
-            if (player->Bhead == NULL)
-            {
-                printf(
-                    ":: YOU DO NOT HAVE ANY POKEBALLS VISIT THE STORE TO "
-                    "BUY MORE :: \n");
-                break;
-            }
-            int catch_option = 0;
-            printf("[1] catch [2] run\n");
-            scanf("%d", &catch_option);
-            switch (catch_option)
-            {
+        switch (menu_option) {
             case 1:
-                printf("\n=== CHOOSE A BALL TO USE ===\n");
-                int ball_option = 0;
-                Ball *chosen_ball = choose_ball(player, &ball_option);
-
-                int action = 0;
-                printf("[1] throw ball [2] change ball [3] run \n");
-                scanf("%d", &action);
-                while (action == 2)
-                {
-                    chosen_ball = choose_ball(player, &ball_option);
-                    printf("[1] throw ball [2] change ball [3] run");
-                    scanf("%d", &action);
+                if (!_has_init) {
+                    _init_pokemons_list(p_pokemons);
+                    _has_init = true;
+                }
+                disp_walking();
+                Pokemon *random_pokemon =
+                    gen_rand_pokemon(p_pokemons, NUM_OF_POKEMONS);
+                if (random_pokemon->is_legendary) {
+                    style_printf_encountered(YELLOW, random_pokemon);
+                } else {
+                    style_printf_encountered(LIGHT_AQUA, random_pokemon);
                 }
 
-                if (action == 1)
-                {
-                    throw_ball(chosen_ball, random_pokemon, player);
-                    player->Bhead = remove_ball(player, ball_option);
+                if (player->Bhead == NULL) {
+                    printf(
+                        ":: YOU DO NOT HAVE ANY POKEBALLS VISIT THE STORE TO "
+                        "BUY MORE :: \n");
+                    break;
                 }
-                else if (action == 3)
-                {
-                    SetConsoleTextAttribute(hc,
-                                            RED | FOREGROUND_INTENSITY);
-                    printf("** YOU RAN AWAY :: POKEMON FLED **\n");
-                    SetConsoleTextAttribute(hc, DEFAULT);
-                    printf("press any key to go to the menu...");
+                int catch_option = 0;
+                printf("[1] catch [2] run\n");
+                scanf("%d", &catch_option);
+                switch (catch_option) {
+                    case 1:
+                        printf("\n=== CHOOSE A BALL TO USE ===\n");
+                        int ball_option = 0;
+                        Ball *chosen_ball = choose_ball(player, &ball_option);
+
+                        int action = 0;
+                        printf("[1] throw ball [2] change ball [3] run \n");
+                        scanf("%d", &action);
+                        while (action == 2) {
+                            chosen_ball = choose_ball(player, &ball_option);
+                            printf("[1] throw ball [2] change ball [3] run");
+                            scanf("%d", &action);
+                        }
+
+                        if (action == 1) {
+                            throw_ball(chosen_ball, random_pokemon, player);
+                            player->Bhead = remove_ball(player, ball_option);
+                        } else if (action == 3) {
+                            SetConsoleTextAttribute(hc,
+                                                    RED | FOREGROUND_INTENSITY);
+                            printf("** YOU RAN AWAY :: POKEMON FLED **\n");
+                            SetConsoleTextAttribute(hc, DEFAULT);
+                            printf("press any key to go to the menu...");
+                        }
+
+                        getch();
+                        break;
+                    case 2:
+                        SetConsoleTextAttribute(hc, RED | FOREGROUND_INTENSITY);
+                        printf("** YOU RAN AWAY :: POKEMON FLED **");
+                        SetConsoleTextAttribute(hc, DEFAULT);
+                        getch();
+                        break;
+                    default:
+                        printf("Invalid option try again : ");
+                        break;
                 }
 
                 getch();
                 break;
             case 2:
-                SetConsoleTextAttribute(hc, RED | FOREGROUND_INTENSITY);
-                printf("** YOU RAN AWAY :: POKEMON FLED **");
-                SetConsoleTextAttribute(hc, DEFAULT);
+                printf("\n === SHOWCASE === \n");
+                printf("[ CHOOSE A POKEMON ] \n");
+
+                if (player->Phead == NULL) {
+                    SetConsoleTextAttribute(hc, RED | FOREGROUND_INTENSITY);
+                    printf(":: NO POKEMONS IN POKEDEX CURRENTLY :: \n");
+                    SetConsoleTextAttribute(hc, DEFAULT);
+                } else {
+                    int showcase_index = 1;
+                    PokeNode *tmp = player->Phead;
+                    int showcase_choice = 0;
+
+                    while (tmp != NULL) {
+                        disp_pokemon(tmp->data, showcase_index);
+                        tmp = tmp->next;
+                        showcase_index++;
+                    }
+
+                    printf("ENTER A POKEMON NUMBER TO SHOWCASE : ");
+                    scanf("%d", &showcase_choice);
+                    while (showcase_choice >= showcase_index) {
+                        SetConsoleTextAttribute(hc, RED | FOREGROUND_INTENSITY);
+                        printf(":: ERROR CHOICE OUT OF RANGE RE-ENTER \n");
+                        SetConsoleTextAttribute(hc, DEFAULT);
+                        scanf("%d", &showcase_choice);
+                    }
+
+                    add_to_showcase(player, showcase_choice);
+                }
+
                 getch();
                 break;
-            default:
-                printf("Invalid option try again : ");
+            case 3:
+                disp_shop(player);
+                getch();
                 break;
+            case 4:
+                free_pokedex(player);
+                free_pokeballs(player);
+                player->Phead = NULL;
+                player->Bhead = NULL;
+                free(player->showcase);
+                free(player->username);
+
+                free(player);
+                printf("Thanks for playing!");
+
+                break;
+            default: {
+                printf("Invalid option try again : ");
+                getch();
             }
-
-            getch();
-            break;
-        case 2:
-            printf("\n === SHOWCASE === \n");
-            printf("[ CHOOSE A POKEMON ] \n");
-
-            if (player->Phead == NULL)
-            {
-                SetConsoleTextAttribute(hc, RED | FOREGROUND_INTENSITY);
-                printf(":: NO POKEMONS IN POKEDEX CURRENTLY :: \n");
-                SetConsoleTextAttribute(hc, DEFAULT);
-            }
-            else
-            {
-                int showcase_index = 1;
-                PokeNode *tmp = player->Phead;
-                int showcase_choice = 0;
-
-                while (tmp != NULL)
-                {
-                    disp_pokemon(tmp->data, showcase_index);
-                    tmp = tmp->next;
-                    showcase_index++;
-                }
-
-                printf("ENTER A POKEMON NUMBER TO SHOWCASE : ");
-                scanf("%d", &showcase_choice);
-                while (showcase_choice >= showcase_index)
-                {
-                    SetConsoleTextAttribute(hc, RED | FOREGROUND_INTENSITY);
-                    printf(":: ERROR CHOICE OUT OF RANGE RE-ENTER \n");
-                    SetConsoleTextAttribute(hc, DEFAULT);
-                    scanf("%d", &showcase_choice);
-                }
-
-                add_to_showcase(player, showcase_choice);
-            }
-
-            getch();
-            break;
-        case 3:
-            disp_shop(player);
-            getch();
-            break;
-        case 4:
-            free_pokedex(player);
-            free_pokeballs(player);
-            player->Phead = NULL;
-            player->Bhead = NULL;
-            free(player->showcase);
-            free(player->username);
-
-            free(player);
-            printf("Thanks for playing!");
-
-            break;
-        default:
-        {
-            printf("Invalid option try again : ");
-            getch();
-        }
         }
     }
 
     return 0;
 }
 
-void welcome(char *version)
-{
+void welcome(char *version) {
     printf("====== WELCOME TO POKEMON C %s ====== \n", version);
     printf("Pokemon C is a pokemon simulator\n");
     printf("[] catch pokemons\n[] showcase your pokemons\n");
@@ -317,8 +289,7 @@ void welcome(char *version)
     getch();
 }
 
-unsigned short int get_menu(Player *player)
-{
+unsigned short int get_menu(Player *player) {
     unsigned short int option = 0;
     printf("\n === POKEMON C ===\t\t\t");
     SetConsoleTextAttribute(hc, BLUE | FOREGROUND_INTENSITY);
@@ -334,13 +305,11 @@ unsigned short int get_menu(Player *player)
     return option;
 }
 
-Player *get_player()
-{
+Player *get_player() {
     srand(time(NULL));
     Player *new_player = malloc(sizeof(Player));
 
-    if (new_player == NULL)
-    {
+    if (new_player == NULL) {
         fprintf(stderr, "ERROR :: MALLOC FAILED FOR NEW_PLAYER");
         free(new_player);
         exit(EXIT_MALLOC_FAILURE);
@@ -352,8 +321,7 @@ Player *get_player()
     new_player->showcase = malloc(4);
     new_player->points = 0;
 
-    if (new_player->showcase == NULL)
-    {
+    if (new_player->showcase == NULL) {
         fprintf(stderr, "ERROR :: MALLOC FAILED FOR NEW_PLAYER->SHOWCASE");
         free(new_player->showcase);
         exit(EXIT_MALLOC_FAILURE);
@@ -366,8 +334,7 @@ Player *get_player()
     char *p_input = fgets(input, INPUT_BUFFER, stdin);
     strtok(p_input, "\n");
     new_player->username = malloc(strlen(p_input) + 1);
-    if (new_player->username == NULL)
-    {
+    if (new_player->username == NULL) {
         fprintf(stderr, "ERROR :: MALLOC FAILED FOR NEW_PLAYER->USERNAME");
         free(new_player->username);
         exit(EXIT_MALLOC_FAILURE);
@@ -380,20 +347,16 @@ Player *get_player()
     const unsigned short int MIN_ASCII_LLETTER = 97;
     const unsigned short int MAX_ASCII_LLETTER = 122;
 
-    for (int i = 0; i < 8; i++)
-    {
+    for (int i = 0; i < 8; i++) {
         int rand_code;
-        if (i % 2 == 0)
-        {
+        if (i % 2 == 0) {
             rand_code = rand() % (MAX_ASCII_NUMBER - MIN_ASCII_NUMBER) +
                         MIN_ASCII_NUMBER;
-        }
-        else
-        {
+        } else {
             rand_code = rand() % (MAX_ASCII_LLETTER - MIN_ASCII_LLETTER) +
                         MIN_ASCII_LLETTER;
         }
-        uuid[i] = (char)rand_code;
+        uuid[i] = (char) rand_code;
     }
 
     strcpy(new_player->id, uuid);
@@ -419,8 +382,7 @@ Player *get_player()
  *
  */
 
-void _init_pokemons_list(Pokemon *p_pokemons)
-{
+void _init_pokemons_list(Pokemon *p_pokemons) {
     p_pokemons[0].name = "Pikachu";
     p_pokemons[0].type = "Electric";
     p_pokemons[0].is_legendary = false;
@@ -508,18 +470,14 @@ void _init_pokemons_list(Pokemon *p_pokemons)
     const unsigned short int NORMAL_MIN_RANGE = 1;
     const unsigned short int NORMAL_MAX_RANGE = 11;
 
-    for (int i = 0; i < NUM_OF_POKEMONS; i++)
-    {
+    for (int i = 0; i < NUM_OF_POKEMONS; i++) {
         unsigned short int rand_mult;
-        if (p_pokemons[i].is_legendary)
-        {
+        if (p_pokemons[i].is_legendary) {
             rand_mult =
                 LEGENDARY_CONST *
                 (rand() % (LEGENDARY_MAX - LEGENDARY_MIN) + LEGENDARY_MIN);
             p_pokemons[i].catch_difficulty = rand_mult;
-        }
-        else if (!p_pokemons[i].is_legendary)
-        {
+        } else if (!p_pokemons[i].is_legendary) {
             rand_mult =
                 NORMAL_CONST * (rand() % (NORMAL_MAX_RANGE - NORMAL_MIN_RANGE) +
                                 NORMAL_MIN_RANGE);
@@ -528,13 +486,11 @@ void _init_pokemons_list(Pokemon *p_pokemons)
     }
 }
 
-Ball *create_pokeball(char *type, unsigned short int modifier)
-{
+Ball *create_pokeball(char *type, unsigned short int modifier) {
     Ball *new_ball = malloc(sizeof(Ball));
     new_ball->type = malloc(strlen(type) + 1);
 
-    if (new_ball == NULL || new_ball->type == NULL)
-    {
+    if (new_ball == NULL || new_ball->type == NULL) {
         fprintf(stderr, "Failed mallocation for new_ball");
         free(new_ball->type);
         free(new_ball);
@@ -546,16 +502,14 @@ Ball *create_pokeball(char *type, unsigned short int modifier)
     return new_ball;
 }
 
-BallNode *_init_ball_llist()
-{
+BallNode *_init_ball_llist() {
     BallNode *head = malloc(sizeof(BallNode));
     BallNode *first_node = malloc(sizeof(BallNode));
     BallNode *second_node = malloc(sizeof(BallNode));
     BallNode *third_node = malloc(sizeof(BallNode));
 
     if (head == NULL || first_node == NULL || second_node == NULL ||
-        third_node == NULL)
-    {
+        third_node == NULL) {
         fprintf(stderr, "ERROR :: MALLOC FAILED FOR _INIT_BALL_LLIST");
         free(head);
         free(first_node);
@@ -581,13 +535,11 @@ BallNode *_init_ball_llist()
     return head;
 }
 
-void disp_inv_ball_list(BallNode *head)
-{
+void disp_inv_ball_list(BallNode *head) {
     int ball_inv_amount = 1;
     int _iter = 1;
 
-    while (head != NULL)
-    {
+    while (head != NULL) {
         SetConsoleTextAttribute(hc, BRIGHT_WHITE | FOREGROUND_INTENSITY);
         printf("%d : %d x %s \n", _iter, ball_inv_amount, head->data->type);
         head = head->next;
@@ -596,33 +548,26 @@ void disp_inv_ball_list(BallNode *head)
     SetConsoleTextAttribute(hc, DEFAULT);
 }
 
-Pokemon *gen_rand_pokemon(Pokemon *p_pokemons, unsigned short int size)
-{
+Pokemon *gen_rand_pokemon(Pokemon *p_pokemons, unsigned short int size) {
     unsigned short int random_index = rand() % size;
-    while ((p_pokemons + random_index)->is_legendary)
-    {
+    while ((p_pokemons + random_index)->is_legendary) {
         const unsigned short int LEGENDARY_THRESHOLD = 100;
         unsigned short int max = 1000;
         unsigned short int curtail_randomizer = rand() % max;
-        if (curtail_randomizer <= LEGENDARY_THRESHOLD)
-        {
+        if (curtail_randomizer <= LEGENDARY_THRESHOLD) {
             return p_pokemons + random_index;
-        }
-        else
-        {
+        } else {
             random_index = rand() % size;
         }
     }
     return p_pokemons + random_index;
 }
 
-void disp_walking()
-{
+void disp_walking() {
     const unsigned short int MAX_SLEEP_INTERVAL = 4;
     unsigned short int random_sleep_interval = rand() % MAX_SLEEP_INTERVAL;
     bool _done_walking = false;
-    while (!_done_walking)
-    {
+    while (!_done_walking) {
         sleep(1);
         printf("Walking... \n");
         sleep(1);
@@ -632,16 +577,14 @@ void disp_walking()
     }
 }
 
-Ball *choose_ball(Player *player, int *ball_option)
-{
+Ball *choose_ball(Player *player, int *ball_option) {
     disp_inv_ball_list(player->Bhead);
     int option = 0;
     scanf("%d", &option);
 
     BallNode *curr_ball = player->Bhead;
     int _iter = 1;
-    while (_iter != option)
-    {
+    while (_iter != option) {
         curr_ball = curr_ball->next;
         _iter++;
     }
@@ -652,22 +595,17 @@ Ball *choose_ball(Player *player, int *ball_option)
     return curr_ball->data;
 }
 
-PokeNode *add_to_pokedex(Pokemon *pokemon, PokeNode *head)
-{
+PokeNode *add_to_pokedex(Pokemon *pokemon, PokeNode *head) {
     PokeNode *new_node = malloc(sizeof(PokeNode));
     new_node->data = pokemon;
     new_node->next = NULL;
 
-    if (head == NULL)
-    {
+    if (head == NULL) {
         head = new_node;
-    }
-    else
-    {
+    } else {
         PokeNode *tmp = malloc(sizeof(PokeNode));
         tmp = head;
-        while (tmp->next != NULL)
-        {
+        while (tmp->next != NULL) {
             tmp = tmp->next;
         }
         tmp->next = new_node;
@@ -675,70 +613,58 @@ PokeNode *add_to_pokedex(Pokemon *pokemon, PokeNode *head)
     return head;
 }
 
-void disp_pokemon(Pokemon *pokemon, unsigned short int index)
-{
+void disp_pokemon(Pokemon *pokemon, unsigned short int index) {
     printf("\n POKEMON %d { NAME : %s , TYPE : %s } \n", index, pokemon->name,
            pokemon->type);
 };
 
-void add_to_showcase(Player *player, int showcase_option)
-{
+void add_to_showcase(Player *player, int showcase_option) {
     int _iter = 1;
     PokeNode *tmp = player->Phead;
     printf("SHOWCASE OPT: %d", showcase_option);
-    while (_iter != showcase_option)
-    {
+    while (_iter != showcase_option) {
         tmp = tmp->next;
         _iter++;
     }
 
-    free(player->showcase); // Free existing showcase memory if it exists
+    free(player->showcase);   // Free existing showcase memory if it exists
     player->showcase = strdup(tmp->data->name);
-    if (player->showcase == NULL)
-    {
+    if (player->showcase == NULL) {
         fprintf(stderr, "Memory allocation failed for showcase");
         exit(EXIT_MALLOC_FAILURE);
     }
 }
 
-void free_pokedex(Player *player)
-{
+void free_pokedex(Player *player) {
     PokeNode *tmp = player->Phead;
-    while (tmp != NULL)
-    {
+    while (tmp != NULL) {
         free(tmp->data->name);
         free(tmp->data->type);
         tmp = tmp->next;
     }
 }
 
-void free_pokeballs(Player *player)
-{
+void free_pokeballs(Player *player) {
     BallNode *tmp = player->Bhead;
-    while (tmp != NULL)
-    {
+    while (tmp != NULL) {
         free(tmp->data->type);
         tmp = tmp->next;
     }
 }
 
-BallNode *remove_ball(Player *player, int ball_option)
-{
+BallNode *remove_ball(Player *player, int ball_option) {
     BallNode *curr = player->Bhead;
     BallNode *prev = player->Bhead;
 
-    if (ball_option != 1)
-    {
+    if (ball_option != 1) {
         int _iter = 1;
-        while (_iter != ball_option - 1)
-        {
+        while (_iter != ball_option - 1) {
             prev = prev->next;
             _iter++;
         }
 
         _iter = 1;
-        while (_iter != ball_option)
-        {
+        while (_iter != ball_option) {
             curr = curr->next;
             _iter++;
         }
@@ -746,9 +672,7 @@ BallNode *remove_ball(Player *player, int ball_option)
         prev->next = curr->next;
         curr->next = NULL;
         free(curr);
-    }
-    else if (ball_option == 1)
-    {
+    } else if (ball_option == 1) {
         curr = curr->next;
         prev->next = NULL;
         free(prev);
@@ -758,20 +682,15 @@ BallNode *remove_ball(Player *player, int ball_option)
     return player->Bhead;
 }
 
-void throw_ball(Ball *chosen_ball, Pokemon *random_pokemon, Player *player)
-{
-    if (chosen_ball->catch_chance >= random_pokemon->catch_difficulty)
-    {
+void throw_ball(Ball *chosen_ball, Pokemon *random_pokemon, Player *player) {
+    if (chosen_ball->catch_chance >= random_pokemon->catch_difficulty) {
         player->Phead = add_to_pokedex(random_pokemon, player->Phead);
         unsigned short int previous_xp = player->xp;
         unsigned short int previous_points = player->points;
-        if (player->xp == 0)
-        {
+        if (player->xp == 0) {
             player->xp += random_pokemon->catch_difficulty + player->xp;
             player->points += random_pokemon->catch_difficulty + player->points;
-        }
-        else
-        {
+        } else {
             player->xp +=
                 random_pokemon->catch_difficulty * floor(player->xp / 2);
             player->points +=
@@ -790,16 +709,13 @@ void throw_ball(Ball *chosen_ball, Pokemon *random_pokemon, Player *player)
                abs(player->xp - previous_xp),
                abs(player->points - previous_points));
         SetConsoleTextAttribute(hc, 0x07);
-    }
-    else
-    {
+    } else {
         printf("~~ MISSED ~~");
         // re throw or pokemon flees
     }
 }
 
-void style_printf_encountered(WORD text_color, Pokemon *pokemon)
-{
+void style_printf_encountered(WORD text_color, Pokemon *pokemon) {
     SetConsoleTextAttribute(hc, text_color | FOREGROUND_INTENSITY);
     printf("** YOU ENCOUNTERED : %s **\n", pokemon->name);
     SetConsoleTextAttribute(hc, DEFAULT);
