@@ -1,5 +1,2 @@
 
-  return new_player;
-}
-
-/*
+  new_ball->data = ball;

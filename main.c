@@ -16,6 +16,7 @@ typedef struct Ball {
   char *type;
   unsigned short int modifier;     // based on type 1.5 , 3 , 5 , 10
   unsigned short int catch_chance; // base * modifier
+  unsigned short int points_to_buy;
 } Ball;
 
 typedef struct BallNode {
@@ -67,6 +68,21 @@ enum Colors {
   DEFAULT = 0x07
 };
 
+enum BallModifiers {
+  POKEBALL_MOD = 1,
+  GREATBALL_MOD = 3,
+  ULTRABALL_MOD = 5,
+  MASTERBALL_MOD = 10
+};
+
+enum BallPrices {
+  POKEBALL_PRICE = 20,
+  GREATBALL_PRICE = 100,
+  ULTRABALL_PRICE = 1000,
+  MASTERBALL_PRICE = 10000
+
+};
+
 // EXIT CODES
 const unsigned short int EXIT_MALLOC_FAILURE = 2;
 
@@ -85,6 +101,7 @@ void disp_showcase_pokemons(Player *player, int *showcase_index);
 void style_printf_encountered(WORD text_color, Pokemon *pokemon);
 void style_printf_fled(WORD text_color, Pokemon *pokemon);
 void style_printf(WORD text_color, char *string);
+void style_printf_points(WORD text_color, Player *player);
 
 //[input function]
 Player *get_player();
@@ -92,7 +109,9 @@ unsigned short int get_shop();
 unsigned short int get_ball_shop();
 
 //[constructors]
-Ball *create_pokeball(char *type, unsigned short int modifier);
+Ball *create_pokeball(char *type,
+                      unsigned short int modifier,
+                      unsigned short int price);
 
 //[initializers]
 void _init_pokemons_list(Pokemon *p_pokemons);
@@ -110,6 +129,7 @@ void add_to_showcase(Player *player, int showcase_option);
 BallNode *remove_ball(Player *player, int ball_option);
 void throw_ball(Ball *chosen_ball, Pokemon *random_pokemon, Player *player);
 int get_showcase_choice(int showcase_index);
+void buy_ball(Player *player, Ball *ball);
 
 //[DEALLOCATORS]
 void free_pokedex(Player *player);
@@ -122,6 +142,7 @@ void handle_catching(Player *player, Pokemon *random_pokemon);
 ===== TO DO ====
 1 : refactor and dry up code
 2 : implement store
+3 : implement Inventory and item count system ** IMPORTANT!!
 */
 
 int main() {
@@ -190,7 +211,6 @@ int main() {
             break;
           default: printf("Invalid option try again : "); break;
         }
-        /* handle_catching(Player* player, Pokemon* random_pokemon) */
         getch();
         break;
       case 2:
@@ -208,15 +228,67 @@ int main() {
         getch();
         break;
       case 3:
-        printf("=-= ITEM SHOP =-= \n [ YOU HAVE %hu POINTS ]\n",
-               player->points);
+        style_printf(LIGHT_YELLOW, "=-= ITEM SHOP =-= \n");
+        const unsigned short int POINTS_TEXT_STYLE =
+          player->points > 0 ? GREEN : RED;
+        style_printf_points(POINTS_TEXT_STYLE, player);
+        if (player->points < POKEBALL_PRICE) {
+          style_printf(LIGHT_RED, "COME BACK WHEN YOU HAVE MORE POINTS!");
+          getch();
+          break;
+        }
         unsigned short int shop_option = get_shop();
         switch (shop_option) {
           case 1:
-            printf("=-= BUY POKEBALLS =-= \n [ YOU HAVE %hu POINTS ]\n",
-                   player->points);
-            printf("=-= SELECT WHICH BALL YOU WOULD LIKE TO BUY =-= \n");
+            style_printf(LIGHT_YELLOW, "=-= BUY POKEBALLS =-= \n");
+            style_printf_points(POINTS_TEXT_STYLE, player);
+            if (player->points < POKEBALL_PRICE) {
+              style_printf(LIGHT_RED, "COME BACK WHEN YOU HAVE MORE POINTS!");
+              break;
+            }
+            style_printf(LIGHT_YELLOW,
+                         "=-= SELECT WHICH BALL YOU WOULD LIKE TO BUY =-= \n");
             unsigned short int ball_buy_option = get_ball_shop();
+            // buy_ball(Player* player , Ball* ball);
+            switch (ball_buy_option) {
+              case 1:
+                style_printf(LIGHT_RED, "BUYING POKEBALL...");
+                Ball *ball_item =
+                  create_pokeball("pokeball", POKEBALL_MOD, POKEBALL_PRICE);
+                buy_ball(player, ball_item);
+                getch();
+                break;
+              // buy_ball();
+              case 2:
+                style_printf(BLUE, "BUYING GREATBALL...");
+                Ball *ball_item =
+                  create_pokeball("greatball", GREATBALL_MOD, GREATBALL_PRICE);
+                buy_ball(player, ball_item);
+                getch();
+                break;
+
+                // buy_ball();
+              case 3:
+                style_printf(LIGHT_YELLOW,
+                             "BUYING ULTRABALL..."); // buy_ball();
+                Ball *ball_item =
+                  create_pokeball("ultraball", ULTRABALL_MOD, ULTRABALL_PRICE);
+                buy_ball(player, ball_item);
+                getch();
+                break;
+
+              case 4:
+                style_printf(LIGHT_PURPLE,
+                             "BUYING MASTERBALL..."); // buy_masterball();
+                Ball *ball_item = create_pokeball(
+                  "masterball", MASTERBALL_MOD, MASTERBALL_PRICE);
+                buy_ball(player, ball_item);
+              case 5:
+                style_printf(PURPLE,
+                             "EXITING SHOP... PRESS ANY KEY TO RETURN TO MENU");
+                getch();
+                break;
+            }
             getch();
             break;
         }
@@ -453,7 +525,10 @@ void _init_pokemons_list(Pokemon *p_pokemons) {
   }
 }
 
-Ball *create_pokeball(char *type, unsigned short int modifier) {
+Ball *create_pokeball(char *type,
+                      unsigned short int modifier,
+                      unsigned short int price) {
+
   Ball *new_ball = malloc(sizeof(Ball));
   new_ball->type = malloc(strlen(type) + 1);
 
@@ -466,6 +541,7 @@ Ball *create_pokeball(char *type, unsigned short int modifier) {
 
   strcpy(new_ball->type, type);
   new_ball->catch_chance = BALL_BASE_VAL * modifier;
+  new_ball->points_to_buy = price;
   return new_ball;
 }
 
@@ -485,10 +561,14 @@ BallNode *_init_ball_llist() {
     exit(EXIT_MALLOC_FAILURE);
   }
 
-  Ball *starter_pokeball = create_pokeball("pokeball", 1.5);
-  Ball *starter_greatball = create_pokeball("greatball", 3);
-  Ball *starter_ultraball = create_pokeball("ultraball", 5);
-  Ball *starter_masterball = create_pokeball("masterball", 10);
+  Ball *starter_pokeball =
+    create_pokeball("pokeball", POKEBALL_MOD, POKEBALL_PRICE);
+  Ball *starter_greatball =
+    create_pokeball("greatball", GREATBALL_MOD, GREATBALL_PRICE);
+  Ball *starter_ultraball =
+    create_pokeball("ultraball", ULTRABALL_MOD, ULTRABALL_PRICE);
+  Ball *starter_masterball =
+    create_pokeball("masterball", MASTERBALL_MOD, MASTERBALL_PRICE);
 
   head->data = starter_pokeball;
   head->next = first_node;
@@ -708,7 +788,7 @@ unsigned short int get_ball_shop() {
   unsigned short int option = 0;
   style_printf(
     BRIGHT_WHITE,
-    "1 : Poke Balls \n2 : Great Balls \n3 : Ultra Balls \n4 : Master Balls \n");
+    "1 : Poke Balls\t\t|| 20 points\n2 : Great Balls\t\t|| 100 points\n3 : Ultra Balls\t\t|| 1000 points\n4 : Master Balls\t|| 10000 points\n5 : Exit \n");
   scanf("%hu", &option);
   return option;
 }
@@ -771,3 +851,30 @@ void style_printf(WORD text_color, char *string) {
   printf("%s", string);
   SetConsoleTextAttribute(hc, DEFAULT);
 };
+
+void buy_ball(Player *player, Ball *ball) {
+  BallNode *new_ball = malloc(sizeof(BallNode));
+
+  new_ball->data = ball;
+  new_ball->next = NULL;
+
+  if (player->Bhead == NULL) {
+    player->Bhead = new_ball;
+  } else {
+    BallNode *tmp = malloc(sizeof(BallNode));
+    tmp = player->Bhead;
+    while (tmp->next != NULL) {
+      tmp = tmp->next;
+    }
+    tmp->next = new_ball;
+  }
+  player->points = player->points - ball->points_to_buy;
+};
+
+void style_printf_points(WORD text_color, Player *player) {
+  style_printf(BRIGHT_WHITE, "[ YOU HAVE ");
+  SetConsoleTextAttribute(hc, text_color | FOREGROUND_INTENSITY);
+  printf("%hu ", player->points);
+  SetConsoleTextAttribute(hc, DEFAULT);
+  style_printf(BRIGHT_WHITE, "POINTS ] \n");
+}
