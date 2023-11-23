@@ -4,6 +4,7 @@
     "limits": "c",
     "player.h": "c",
     "styles.h": "c",
-    "pokemon.h": "c"
+    "pokemon.h": "c",
+    "stdbool.h": "c"
   }
 }
