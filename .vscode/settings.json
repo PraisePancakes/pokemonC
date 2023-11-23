@@ -1,6 +1,9 @@
 {
   "files.associations": {
     "unistd.h": "c",
-    "limits": "c"
+    "limits": "c",
+    "player.h": "c",
+    "styles.h": "c",
+    "pokemon.h": "c"
   }
 }

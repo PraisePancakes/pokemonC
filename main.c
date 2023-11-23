@@ -258,20 +258,19 @@ int main() {
                 buy_ball(player, ball_item);
                 getch();
                 break;
-              // buy_ball();
+
               case 2:
                 style_printf(BLUE, "BUYING GREATBALL...");
-                Ball *ball_item =
+                ball_item =
                   create_pokeball("greatball", GREATBALL_MOD, GREATBALL_PRICE);
                 buy_ball(player, ball_item);
                 getch();
                 break;
 
-                // buy_ball();
               case 3:
                 style_printf(LIGHT_YELLOW,
                              "BUYING ULTRABALL..."); // buy_ball();
-                Ball *ball_item =
+                ball_item =
                   create_pokeball("ultraball", ULTRABALL_MOD, ULTRABALL_PRICE);
                 buy_ball(player, ball_item);
                 getch();
@@ -280,7 +279,7 @@ int main() {
               case 4:
                 style_printf(LIGHT_PURPLE,
                              "BUYING MASTERBALL..."); // buy_masterball();
-                Ball *ball_item = create_pokeball(
+                ball_item = create_pokeball(
                   "masterball", MASTERBALL_MOD, MASTERBALL_PRICE);
                 buy_ball(player, ball_item);
               case 5:
