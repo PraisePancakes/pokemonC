@@ -10,15 +10,16 @@
 #include <windows.h>
 
 #define NUM_OF_POKEMONS 20
-
 /*
 ===== TO DO ====
-1 : refactor and dry up code
+1 : save file, read file
 2 : implement store
 3 : implement Inventory and item count system ** IMPORTANT!!
 */
 
 int main() {
+  const char *filename = "PokeSave.bin";
+
   hc = GetStdHandle(STD_OUTPUT_HANDLE);
   Player *player = malloc(sizeof(Player));
 
