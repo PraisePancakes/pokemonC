@@ -80,12 +80,12 @@ clean: CMakeFiles/PokemonC.dir/clean
 CMakeFiles/PokemonC.dir/all:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles\PokemonC.dir\build.make CMakeFiles/PokemonC.dir/depend
 	$(MAKE) $(MAKESILENT) -f CMakeFiles\PokemonC.dir\build.make CMakeFiles/PokemonC.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=C:\Users\aryas\OneDrive\Desktop\PokeC\build\CMakeFiles --progress-num=1,2 "Built target PokemonC"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=C:\Users\aryas\OneDrive\Desktop\PokeC\build\CMakeFiles --progress-num=1,2,3,4,5,6,7 "Built target PokemonC"
 .PHONY : CMakeFiles/PokemonC.dir/all
 
 # Build rule for subdir invocation for target.
 CMakeFiles/PokemonC.dir/rule: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start C:\Users\aryas\OneDrive\Desktop\PokeC\build\CMakeFiles 2
+	$(CMAKE_COMMAND) -E cmake_progress_start C:\Users\aryas\OneDrive\Desktop\PokeC\build\CMakeFiles 7
 	$(MAKE) $(MAKESILENT) -f CMakeFiles\Makefile2 CMakeFiles/PokemonC.dir/all
 	$(CMAKE_COMMAND) -E cmake_progress_start C:\Users\aryas\OneDrive\Desktop\PokeC\build\CMakeFiles 0
 .PHONY : CMakeFiles/PokemonC.dir/rule

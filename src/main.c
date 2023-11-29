@@ -36,6 +36,7 @@ int main() {
 
   char *version = "v0.0.0-unreleased";
   system("cls");
+
   welcome(version);
 
   player = get_player();

@@ -4,5 +4,35 @@
   "command": "C:\\MinGW\\bin\\gcc.exe   -g -o CMakeFiles\\PokemonC.dir\\src\\main.c.obj -c C:\\Users\\aryas\\OneDrive\\Desktop\\PokeC\\src\\main.c",
   "file": "C:/Users/aryas/OneDrive/Desktop/PokeC/src/main.c",
   "output": "CMakeFiles/PokemonC.dir/src/main.c.obj"
+},
+{
+  "directory": "C:/Users/aryas/OneDrive/Desktop/PokeC/build",
+  "command": "C:\\MinGW\\bin\\gcc.exe   -g -o CMakeFiles\\PokemonC.dir\\src\\ball.c.obj -c C:\\Users\\aryas\\OneDrive\\Desktop\\PokeC\\src\\ball.c",
+  "file": "C:/Users/aryas/OneDrive/Desktop/PokeC/src/ball.c",
+  "output": "CMakeFiles/PokemonC.dir/src/ball.c.obj"
+},
+{
+  "directory": "C:/Users/aryas/OneDrive/Desktop/PokeC/build",
+  "command": "C:\\MinGW\\bin\\gcc.exe   -g -o CMakeFiles\\PokemonC.dir\\src\\file.c.obj -c C:\\Users\\aryas\\OneDrive\\Desktop\\PokeC\\src\\file.c",
+  "file": "C:/Users/aryas/OneDrive/Desktop/PokeC/src/file.c",
+  "output": "CMakeFiles/PokemonC.dir/src/file.c.obj"
+},
+{
+  "directory": "C:/Users/aryas/OneDrive/Desktop/PokeC/build",
+  "command": "C:\\MinGW\\bin\\gcc.exe   -g -o CMakeFiles\\PokemonC.dir\\src\\gui.c.obj -c C:\\Users\\aryas\\OneDrive\\Desktop\\PokeC\\src\\gui.c",
+  "file": "C:/Users/aryas/OneDrive/Desktop/PokeC/src/gui.c",
+  "output": "CMakeFiles/PokemonC.dir/src/gui.c.obj"
+},
+{
+  "directory": "C:/Users/aryas/OneDrive/Desktop/PokeC/build",
+  "command": "C:\\MinGW\\bin\\gcc.exe   -g -o CMakeFiles\\PokemonC.dir\\src\\player.c.obj -c C:\\Users\\aryas\\OneDrive\\Desktop\\PokeC\\src\\player.c",
+  "file": "C:/Users/aryas/OneDrive/Desktop/PokeC/src/player.c",
+  "output": "CMakeFiles/PokemonC.dir/src/player.c.obj"
+},
+{
+  "directory": "C:/Users/aryas/OneDrive/Desktop/PokeC/build",
+  "command": "C:\\MinGW\\bin\\gcc.exe   -g -o CMakeFiles\\PokemonC.dir\\src\\pokemon.c.obj -c C:\\Users\\aryas\\OneDrive\\Desktop\\PokeC\\src\\pokemon.c",
+  "file": "C:/Users/aryas/OneDrive/Desktop/PokeC/src/pokemon.c",
+  "output": "CMakeFiles/PokemonC.dir/src/pokemon.c.obj"
 }
 ]

@@ -128,6 +128,78 @@ PokemonC/fast:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles\PokemonC.dir\build.make CMakeFiles/PokemonC.dir/build
 .PHONY : PokemonC/fast
 
+src/ball.obj: src/ball.c.obj
+.PHONY : src/ball.obj
+
+# target to build an object file
+src/ball.c.obj:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\PokemonC.dir\build.make CMakeFiles/PokemonC.dir/src/ball.c.obj
+.PHONY : src/ball.c.obj
+
+src/ball.i: src/ball.c.i
+.PHONY : src/ball.i
+
+# target to preprocess a source file
+src/ball.c.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\PokemonC.dir\build.make CMakeFiles/PokemonC.dir/src/ball.c.i
+.PHONY : src/ball.c.i
+
+src/ball.s: src/ball.c.s
+.PHONY : src/ball.s
+
+# target to generate assembly for a file
+src/ball.c.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\PokemonC.dir\build.make CMakeFiles/PokemonC.dir/src/ball.c.s
+.PHONY : src/ball.c.s
+
+src/file.obj: src/file.c.obj
+.PHONY : src/file.obj
+
+# target to build an object file
+src/file.c.obj:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\PokemonC.dir\build.make CMakeFiles/PokemonC.dir/src/file.c.obj
+.PHONY : src/file.c.obj
+
+src/file.i: src/file.c.i
+.PHONY : src/file.i
+
+# target to preprocess a source file
+src/file.c.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\PokemonC.dir\build.make CMakeFiles/PokemonC.dir/src/file.c.i
+.PHONY : src/file.c.i
+
+src/file.s: src/file.c.s
+.PHONY : src/file.s
+
+# target to generate assembly for a file
+src/file.c.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\PokemonC.dir\build.make CMakeFiles/PokemonC.dir/src/file.c.s
+.PHONY : src/file.c.s
+
+src/gui.obj: src/gui.c.obj
+.PHONY : src/gui.obj
+
+# target to build an object file
+src/gui.c.obj:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\PokemonC.dir\build.make CMakeFiles/PokemonC.dir/src/gui.c.obj
+.PHONY : src/gui.c.obj
+
+src/gui.i: src/gui.c.i
+.PHONY : src/gui.i
+
+# target to preprocess a source file
+src/gui.c.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\PokemonC.dir\build.make CMakeFiles/PokemonC.dir/src/gui.c.i
+.PHONY : src/gui.c.i
+
+src/gui.s: src/gui.c.s
+.PHONY : src/gui.s
+
+# target to generate assembly for a file
+src/gui.c.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\PokemonC.dir\build.make CMakeFiles/PokemonC.dir/src/gui.c.s
+.PHONY : src/gui.c.s
+
 src/main.obj: src/main.c.obj
 .PHONY : src/main.obj
 
@@ -152,6 +224,54 @@ src/main.c.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles\PokemonC.dir\build.make CMakeFiles/PokemonC.dir/src/main.c.s
 .PHONY : src/main.c.s
 
+src/player.obj: src/player.c.obj
+.PHONY : src/player.obj
+
+# target to build an object file
+src/player.c.obj:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\PokemonC.dir\build.make CMakeFiles/PokemonC.dir/src/player.c.obj
+.PHONY : src/player.c.obj
+
+src/player.i: src/player.c.i
+.PHONY : src/player.i
+
+# target to preprocess a source file
+src/player.c.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\PokemonC.dir\build.make CMakeFiles/PokemonC.dir/src/player.c.i
+.PHONY : src/player.c.i
+
+src/player.s: src/player.c.s
+.PHONY : src/player.s
+
+# target to generate assembly for a file
+src/player.c.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\PokemonC.dir\build.make CMakeFiles/PokemonC.dir/src/player.c.s
+.PHONY : src/player.c.s
+
+src/pokemon.obj: src/pokemon.c.obj
+.PHONY : src/pokemon.obj
+
+# target to build an object file
+src/pokemon.c.obj:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\PokemonC.dir\build.make CMakeFiles/PokemonC.dir/src/pokemon.c.obj
+.PHONY : src/pokemon.c.obj
+
+src/pokemon.i: src/pokemon.c.i
+.PHONY : src/pokemon.i
+
+# target to preprocess a source file
+src/pokemon.c.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\PokemonC.dir\build.make CMakeFiles/PokemonC.dir/src/pokemon.c.i
+.PHONY : src/pokemon.c.i
+
+src/pokemon.s: src/pokemon.c.s
+.PHONY : src/pokemon.s
+
+# target to generate assembly for a file
+src/pokemon.c.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\PokemonC.dir\build.make CMakeFiles/PokemonC.dir/src/pokemon.c.s
+.PHONY : src/pokemon.c.s
+
 # Help Target
 help:
 	@echo The following are some of the valid targets for this Makefile:
@@ -161,9 +281,24 @@ help:
 	@echo ... edit_cache
 	@echo ... rebuild_cache
 	@echo ... PokemonC
+	@echo ... src/ball.obj
+	@echo ... src/ball.i
+	@echo ... src/ball.s
+	@echo ... src/file.obj
+	@echo ... src/file.i
+	@echo ... src/file.s
+	@echo ... src/gui.obj
+	@echo ... src/gui.i
+	@echo ... src/gui.s
 	@echo ... src/main.obj
 	@echo ... src/main.i
 	@echo ... src/main.s
+	@echo ... src/player.obj
+	@echo ... src/player.i
+	@echo ... src/player.s
+	@echo ... src/pokemon.obj
+	@echo ... src/pokemon.i
+	@echo ... src/pokemon.s
 .PHONY : help
 
 
