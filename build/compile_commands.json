@@ -1,0 +1,8 @@
+[
+{
+  "directory": "C:/Users/aryas/OneDrive/Desktop/PokeC/build",
+  "command": "C:\\MinGW\\bin\\gcc.exe   -g -o CMakeFiles\\PokemonC.dir\\src\\main.c.obj -c C:\\Users\\aryas\\OneDrive\\Desktop\\PokeC\\src\\main.c",
+  "file": "C:/Users/aryas/OneDrive/Desktop/PokeC/src/main.c",
+  "output": "CMakeFiles/PokemonC.dir/src/main.c.obj"
+}
+]
