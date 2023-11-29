@@ -1,10 +1,11 @@
 CMakeFiles/PokemonC.dir/src/main.c.obj: \
  C:\Users\aryas\OneDrive\Desktop\PokeC\src\main.c \
  C:\Users\aryas\OneDrive\Desktop\PokeC\src\ball.h \
- C:\Users\aryas\OneDrive\Desktop\PokeC\src\gui.h \
+ C:\Users\aryas\OneDrive\Desktop\PokeC\src\file.h \
  C:\Users\aryas\OneDrive\Desktop\PokeC\src\player.h \
  C:\Users\aryas\OneDrive\Desktop\PokeC\src\pokemon.h \
  c:\mingw\lib\gcc\mingw32\6.3.0\include\stdbool.h \
+ C:\Users\aryas\OneDrive\Desktop\PokeC\src\gui.h \
  c:\mingw\include\windows.h \
  c:\mingw\lib\gcc\mingw32\6.3.0\include\stdarg.h \
  c:\mingw\include\windef.h c:\mingw\include\w32api.h \

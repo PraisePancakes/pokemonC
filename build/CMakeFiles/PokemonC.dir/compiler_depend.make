@@ -117,6 +117,7 @@ CMakeFiles/PokemonC.dir/src/gui.c.obj: C:/Users/aryas/OneDrive/Desktop/PokeC/src
 
 CMakeFiles/PokemonC.dir/src/main.c.obj: C:/Users/aryas/OneDrive/Desktop/PokeC/src/main.c \
   C:/Users/aryas/OneDrive/Desktop/PokeC/src/ball.h \
+  C:/Users/aryas/OneDrive/Desktop/PokeC/src/file.h \
   C:/Users/aryas/OneDrive/Desktop/PokeC/src/gui.h \
   C:/Users/aryas/OneDrive/Desktop/PokeC/src/player.h \
   C:/Users/aryas/OneDrive/Desktop/PokeC/src/pokemon.h \
