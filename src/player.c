@@ -11,6 +11,7 @@ void disp_inv_ball_list(Player *player) {
   int ball_inv_amount = 1;
   int _iter = 1;
   BallNode *tmp = player->Bhead;
+
   while (tmp != NULL) {
     SetConsoleTextAttribute(hc, BRIGHT_WHITE | FOREGROUND_INTENSITY);
     printf("%d : %d x %s \n", _iter, ball_inv_amount, tmp->data->type);
@@ -43,6 +44,7 @@ Player *_init_player() {
   new_player->Bhead = NULL;
   new_player->Phead = NULL;
   new_player->showcase = malloc(4);
+  new_player->showcase_type = malloc(4);
   new_player->points = 0;
 
   if (new_player->showcase == NULL) {
@@ -52,12 +54,15 @@ Player *_init_player() {
   }
   strcpy(new_player->showcase, "TBA");
 
+  strcpy(new_player->showcase_type, "TBA");
+
   return new_player;
 }
 
 Player *get_player() {
   srand(time(NULL));
   Player *new_player = _init_player();
+  new_player->Bhead = _init_ball_llist();
 
   char input[INPUT_BUFFER];
   style_printf(YELLOW, "\n\n\n\n What is your username : \n");
@@ -148,6 +153,7 @@ PokeNode *add_to_pokedex(Pokemon *pokemon, PokeNode *head) {
 
 void add_to_showcase(Player *player, int showcase_option) {
   int _iter = 1;
+
   PokeNode *tmp = player->Phead;
   printf("SHOWCASE OPT: %d", showcase_option);
   while (_iter != showcase_option) {
@@ -155,10 +161,17 @@ void add_to_showcase(Player *player, int showcase_option) {
     _iter++;
   }
 
-  free(player->showcase); // Free existing showcase memory if it exists
+  free(player->showcase);
   player->showcase = strdup(tmp->data->name);
   if (player->showcase == NULL) {
     fprintf(stderr, "Memory allocation failed for showcase");
+    exit(EXIT_FAILURE);
+  }
+
+  free(player->showcase_type);
+  player->showcase_type = strdup(tmp->data->type);
+  if (player->showcase_type == NULL) {
+    fprintf(stderr, "Memory allocation failed for showcase type");
     exit(EXIT_FAILURE);
   }
 }

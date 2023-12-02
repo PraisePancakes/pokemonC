@@ -1,4 +1,5 @@
 #include "ball.h"
+#include "file.h"
 #include "gui.h"
 #include "player.h"
 #include "pokemon.h"
@@ -12,41 +13,41 @@
 #define NUM_OF_POKEMONS 20
 /*
 ===== TO DO ====
-1 : save file, read file
 2 : implement store
 3 : implement Inventory and item count system ** IMPORTANT!!
 */
 
 int main() {
-  const char *filename = "PokeSave.bin";
+  const char *player_filename = "PlayerSave.bin";
+  const char *pokedex_filename = "DexSave.bin";
+  const char *pokeballs_filename = "BallSave.bin";
 
   hc = GetStdHandle(STD_OUTPUT_HANDLE);
-  Player *player = malloc(sizeof(Player));
-
+  system("cls");
+  char *version = "v0.0.1-alpha";
+  welcome(version);
+  Player *player = load_player(player_filename);
+  bool _returning_player = false;
   if (player == NULL) {
-    fprintf(stderr, "ERROR :: MEM ALLOC FAILED FOR PLAYER \n");
-    free(player);
-    exit(EXIT_FAILURE);
+
+    player = get_player();
+    system("cls");
+    style_printf(YELLOW, "\n =-=-= HERE ARE YOUR STARTING BALLS =-=-= \n");
+    disp_inv_ball_list(player);
+  } else {
+    _returning_player = true;
+    player->Bhead = load_pokeballs(pokeballs_filename);
+    player->Phead = load_pokedex(pokedex_filename);
   }
 
-  player->showcase = NULL;
   Pokemon pokemons[NUM_OF_POKEMONS];
   Pokemon *p_pokemons = &pokemons[0];
   bool _has_init = false;
-
-  char *version = "v0.0.0-unreleased";
   system("cls");
-
-  welcome(version);
-
-  player = get_player();
-  player->Bhead = _init_ball_llist();
-  style_printf(YELLOW, "\n =-=-= HERE ARE YOUR STARTING BALLS =-=-= \n");
-  disp_inv_ball_list(player);
-
-  player->Phead = NULL;
-
-  style_printf(WHITE, "press any key to go to the menu...");
+  if (_returning_player) {
+    style_printf(LIGHT_AQUA, "** WELCOME BACK **");
+  }
+  style_printf(WHITE, "\npress any key to go to the menu...");
   getch();
   unsigned short int menu_option = 0;
   const unsigned short int MENU_EXIT = 4;
@@ -169,6 +170,11 @@ int main() {
         getch();
         break;
       case 4:
+
+        save_player(player, player_filename);
+        save_pokedex(player, pokedex_filename);
+        save_pokeballs(player, pokeballs_filename);
+
         free_pokedex(player);
         free_pokeballs(player);
         player->Phead = NULL;

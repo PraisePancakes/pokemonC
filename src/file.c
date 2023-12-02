@@ -1,106 +1,230 @@
 #include "file.h"
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
-void save_pokedex(FILE *file, PokeNode *head) {
-  while (head != NULL) {
-    fwrite(head->data, sizeof(Pokemon), 1, file);
-    head = head->next;
-  }
-}
-
-PokeNode *load_pokedex(FILE *file) {
-  PokeNode *head = NULL;
-  PokeNode *current = NULL;
-  Pokemon *temp_pokemon = malloc(sizeof(Pokemon));
-
-  while (fread(temp_pokemon, sizeof(Pokemon), 1, file) == 1) {
-    PokeNode *new_node = malloc(sizeof(PokeNode));
-    new_node->data = temp_pokemon;
-    new_node->next = NULL;
-
-    if (head == NULL) {
-      head = new_node;
-      current = head;
-    } else {
-      current->next = new_node;
-      current = new_node;
-    }
-
-    // Allocate new memory for the next Pokemon
-    temp_pokemon = malloc(sizeof(Pokemon));
-  }
-
-  free(temp_pokemon); // Free the last allocated Pokemon (if any)
-
-  return head;
-}
-
-void save_ball_list(FILE *file, BallNode *head) {
-  while (head != NULL) {
-    // Write each Ball node to the file
-    fwrite(head->data, sizeof(Ball), 1, file);
-    head = head->next;
-  }
-}
-
-BallNode *load_ball_list(FILE *file) {
-  BallNode *head = NULL;
-  BallNode *current = NULL;
-  Ball *temp_ball = (Ball *)malloc(sizeof(Ball));
-
-  while (fread(temp_ball, sizeof(Ball), 1, file) == 1) {
-    BallNode *new_node = (BallNode *)malloc(sizeof(BallNode));
-    new_node->data = temp_ball;
-    new_node->next = NULL;
-
-    if (head == NULL) {
-      head = new_node;
-      current = head;
-    } else {
-      current->next = new_node;
-      current = new_node;
-    }
-
-    // Allocate new memory for the next Ball
-    temp_ball = (Ball *)malloc(sizeof(Ball));
-  }
-
-  free(temp_ball); // Free the last allocated Ball (if any)
-
-  return head;
-}
-
-void save_player(Player *player, const char *file_name) {
-  FILE *file = fopen(file_name, "wb");
+void save_pokedex(Player *player, const char *pokedex_filename) {
+  FILE *file = fopen(pokedex_filename, "wb");
   if (file == NULL) {
-    fprintf(stderr, "Error opening file for writing: %s\n", file_name);
+    fclose(file);
+    return;
+  }
+  if (player->Phead != NULL) {
+    int pokedex_list_length = 0;
+    PokeNode *temp_poke = player->Phead;
+    while (temp_poke != NULL) {
+      pokedex_list_length++;
+      temp_poke = temp_poke->next;
+    }
+    fwrite(&pokedex_list_length, sizeof(int), 1, file);
+    temp_poke = player->Phead;
+    while (temp_poke != NULL) {
+      size_t len = strlen(temp_poke->data->name);
+      fwrite(&len, sizeof(size_t), 1, file);
+      fwrite(temp_poke->data, sizeof(Pokemon) - sizeof(char *), 1, file);
+      fwrite(temp_poke->data->name, len, 1, file);
+      temp_poke = temp_poke->next;
+    }
+
+    fclose(file);
+  } else {
+    fclose(file);
+    return;
+  }
+}
+
+void save_pokeballs(Player *player, const char *pokeballs_filename) {
+  FILE *file = fopen(pokeballs_filename, "wb");
+  if (file == NULL) {
+    perror("Error opening file for writing");
     return;
   }
 
-  fwrite(player, sizeof(Player), 1, file);
+  int ball_list_length = 0;
+  BallNode *temp_ball = player->Bhead;
+  while (temp_ball != NULL) {
+    ball_list_length++;
+    temp_ball = temp_ball->next;
+  }
 
-  save_pokedex(file, player->Phead);
-  save_ball_list(file, player->Bhead);
+  fwrite(&ball_list_length, sizeof(int), 1, file);
+
+  temp_ball = player->Bhead;
+  while (temp_ball != NULL) {
+    size_t len = strlen(temp_ball->data->type);
+    fwrite(&len, sizeof(size_t), 1, file);
+    fwrite(temp_ball->data, sizeof(Ball) - sizeof(char *), 1, file);
+    fwrite(temp_ball->data->type, len, 1, file);
+
+    temp_ball = temp_ball->next;
+  }
 
   fclose(file);
 }
 
-Player *load_player(const char *file_name) {
-  FILE *file = fopen(file_name, "rb");
+PokeNode *load_pokedex(const char *pokedex_filename) {
+  FILE *file = fopen(pokedex_filename, "rb");
   if (file == NULL) {
-    fprintf(stderr, "Error opening file for reading: %s\n", file_name);
+    fprintf(stderr, "Error opening file for pokedex read");
     return NULL;
   }
 
-  Player *player = malloc(sizeof(Player));
+  int poke_list_length;
+  fread(&poke_list_length, sizeof(int), 1, file);
 
-  fread(player, sizeof(Player), 1, file);
+  PokeNode *head = NULL;
+  PokeNode *current = NULL;
+  if (poke_list_length != 0) {
+    while (poke_list_length > 0) {
+      size_t name_len;
+      if (fread(&name_len, sizeof(size_t), 1, file) != 1) {
+        break;
+      }
+      Pokemon *newPokemon = malloc(sizeof(Pokemon));
+      if (fread(newPokemon, sizeof(Pokemon) - sizeof(char *), 1, file) != 1) {
+        free(newPokemon);
+        break;
+      }
+      newPokemon->name = malloc(name_len + 1);
+      if (fread(newPokemon->name, name_len, 1, file) != 1) {
+        free(newPokemon->name);
+        free(newPokemon);
+        break;
+      }
+      newPokemon->name[name_len] = '\0';
+      PokeNode *newNode = malloc(sizeof(PokeNode));
+      newNode->data = newPokemon;
+      newNode->next = NULL;
 
-  player->Phead = load_pokedex(file);
-  player->Bhead = load_ball_list(file);
+      if (head == NULL) {
+        head = newNode;
+        current = head;
+      } else {
+        current->next = newNode;
+        current = newNode;
+      }
+
+      poke_list_length--;
+    }
+  }
+  return head;
+}
+
+BallNode *load_pokeballs(const char *pokeballs_filename) {
+  FILE *file = fopen(pokeballs_filename, "rb");
+  if (file == NULL) {
+    fprintf(stderr, "Error opening file for pokeballs read");
+    return NULL;
+  }
+
+  int ball_list_length;
+  fread(&ball_list_length, sizeof(int), 1, file);
+
+  BallNode *head = NULL;
+  BallNode *current = NULL;
+  if (ball_list_length != 0) {
+    while (ball_list_length > 0) {
+
+      size_t type_len;
+      if (fread(&type_len, sizeof(size_t), 1, file) != 1) {
+        break;
+      }
+
+      // Read a Ball structure from the file
+      Ball *newBall = malloc(sizeof(Ball));
+      if (fread(newBall, sizeof(Ball) - sizeof(char *), 1, file) != 1) {
+        free(newBall);
+        break;
+      }
+
+      newBall->type = malloc(type_len + 1);
+      if (fread(newBall->type, type_len, 1, file) != 1) {
+        free(newBall->type);
+        free(newBall);
+        break;
+      }
+      newBall->type[type_len] = '\0';
+
+      BallNode *newNode = malloc(sizeof(BallNode));
+      newNode->data = newBall;
+      newNode->next = NULL;
+
+      if (head == NULL) {
+        head = newNode;
+        current = head;
+      } else {
+        current->next = newNode;
+        current = newNode;
+      }
+
+      ball_list_length--;
+    }
+  }
 
   fclose(file);
+  return head;
+}
 
-  return player;
+void save_player(Player *player, const char *player_filename) {
+  FILE *file;
+  file = fopen(player_filename, "wb");
+  if (file == NULL) {
+    fclose(file);
+    return;
+  }
+  fwrite(player, sizeof(Player), 1, file);
+
+  size_t name_length = strlen(player->username) + 1;
+  fwrite(&name_length, sizeof(size_t), 1, file);
+  fwrite(player->username, sizeof(char), name_length, file);
+
+  size_t showcase_length = strlen(player->showcase) + 1;
+  fwrite(&showcase_length, sizeof(size_t), 1, file);
+  fwrite(player->showcase, sizeof(char), showcase_length, file);
+
+  size_t showcase_type_length = strlen(player->showcase_type) + 1;
+  fwrite(&showcase_type_length, sizeof(size_t), 1, file);
+  fwrite(player->showcase_type, sizeof(char), showcase_type_length, file);
+
+  size_t id_length = strlen(player->id) + 1;
+  fwrite(&id_length, sizeof(size_t), 1, file);
+  fwrite(player->id, sizeof(char), id_length, file);
+
+  fclose(file);
+}
+
+Player *load_player(const char *player_filename) {
+  Player *loaded_player = malloc(sizeof(Player));
+  FILE *file;
+  file = fopen(player_filename, "rb");
+  if (file == NULL || loaded_player == NULL) {
+    if (loaded_player != NULL) {
+      free(loaded_player);
+    }
+    return NULL;
+  }
+
+  fread(loaded_player, sizeof(Player), 1, file);
+
+  size_t name_length;
+  fread(&name_length, sizeof(size_t), 1, file);
+  loaded_player->username = malloc(name_length);
+  fread(loaded_player->username, sizeof(char), name_length, file);
+
+  size_t showcase_length;
+  fread(&showcase_length, sizeof(size_t), 1, file);
+  loaded_player->showcase = malloc(showcase_length);
+  fread(loaded_player->showcase, sizeof(char), showcase_length, file);
+
+  size_t showcase_type_length;
+  fread(&showcase_type_length, sizeof(size_t), 1, file);
+  loaded_player->showcase_type = malloc(showcase_type_length);
+  fread(loaded_player->showcase_type, sizeof(char), showcase_type_length, file);
+
+  size_t id_length;
+  fread(&id_length, sizeof(size_t), 1, file);
+  fread(loaded_player->id, sizeof(char), id_length, file);
+
+  fclose(file);
+  return loaded_player;
 }

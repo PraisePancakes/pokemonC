@@ -7,10 +7,10 @@
 
 void welcome(char *version) {
   SetConsoleTextAttribute(hc, YELLOW | FOREGROUND_INTENSITY);
-  printf("=-=-=-= WELCOME TO POKEMON C %s =-=-=-= \n", version);
+  printf("\n =-=-=-= WELCOME TO POKEMON C %s =-=-=-= \n", version);
   style_printf(
     WHITE,
-    "Pokemon C is a pokemon simulator\n[] catch pokemons\n[] showcase your pokemons\npress any key to begin ...");
+    "Pokemon C is a pokemon simulator\n[] catch pokemons\n[] showcase your pokemons\npress any key to advance...");
   getch();
 }
 
@@ -18,13 +18,15 @@ unsigned short int get_menu(Player *player) {
   unsigned short int option = 0;
   style_printf(YELLOW, "\n =-=-= POKEMON C =-=-=\t\t\t");
   SetConsoleTextAttribute(hc, BLUE | FOREGROUND_INTENSITY);
-  printf("USER { username : %s, id : %s, xp : %hu, points : %hu, showcase : %s "
-         "}\n ",
-         player->username,
-         player->id,
-         player->xp,
-         player->points,
-         player->showcase);
+  printf(
+    "USER { username : %s, id : %s, xp : %hu, points : %hu, showcase : [%s :: %s] "
+    "}\n ",
+    player->username,
+    player->id,
+    player->xp,
+    player->points,
+    player->showcase,
+    player->showcase_type);
   style_printf(BRIGHT_WHITE,
                "1 : CATCH \n 2 : SHOWCASE \n 3 : ITEM SHOP \n 4 : EXIT \n");
 

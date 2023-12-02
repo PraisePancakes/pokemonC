@@ -8,6 +8,7 @@ typedef struct Player {
   BallNode *Bhead; // [ball1 -> ball2 -> NULL]
   PokeNode *Phead; // linked list of the pokemons the player has
   char *showcase;
+  char *showcase_type;
   char *username;
   char id[9];
   unsigned short int xp;

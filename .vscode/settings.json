@@ -6,6 +6,8 @@
     "styles.h": "c",
     "pokemon.h": "c",
     "stdbool.h": "c",
-    "gui.h": "c"
+    "gui.h": "c",
+    "typeinfo": "c",
+    "file.h": "c"
   }
 }
