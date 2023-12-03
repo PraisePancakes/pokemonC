@@ -63,6 +63,7 @@ int main() {
           _init_pokemons_list(p_pokemons);
           _has_init = true;
         }
+        system("cls");
         style_printf(LIGHT_PURPLE, "\n =-= ON ROUTE FOR CATCHING =-= \n");
         disp_walking();
         Pokemon *random_pokemon = gen_rand_pokemon(p_pokemons, NUM_OF_POKEMONS);
@@ -73,7 +74,8 @@ int main() {
           break;
         }
         int catch_option = 0;
-        printf("[1] catch [2] run\n");
+        style_printf(LIGHT_GREEN, "[1] catch ");
+        style_printf(LIGHT_RED, "[2] run\n");
         scanf("%d", &catch_option);
         switch (catch_option) {
           case 1:
@@ -82,10 +84,12 @@ int main() {
             break;
           case 2:
             style_printf_fled(RED, random_pokemon);
-            printf("press any key to go to the menu...");
+            style_printf(BRIGHT_WHITE, "press any key to go to the menu...");
             getch();
             break;
-          default: printf("Invalid option try again : "); break;
+          default:
+            style_printf(LIGHT_RED, ":: Invalid option try again :: ");
+            break;
         }
         getch();
         break;
@@ -183,11 +187,11 @@ int main() {
         free(player->username);
 
         free(player);
-        printf("Thanks for playing!");
+        style_printf(LIGHT_AQUA, ">:> THANKS FOR PLAYING <:<");
 
         break;
       default: {
-        printf("Invalid option try again : ");
+        style_printf(LIGHT_RED, ":: Invalid option try again :: ");
         getch();
       }
     }

@@ -40,9 +40,9 @@ void disp_walking() {
   bool _done_walking = false;
   while (!_done_walking) {
     sleep(1);
-    printf("Walking... \n");
+    style_printf(BRIGHT_WHITE, "Walking... \n");
     sleep(1);
-    printf("Walking... \n");
+    style_printf(BRIGHT_WHITE, "Walking... \n");
     sleep(MAX_SLEEP_INTERVAL);
     _done_walking = true;
   }
