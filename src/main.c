@@ -18,9 +18,9 @@
 */
 
 int main() {
-  const char *player_filename = "PlayerSave.bin";
-  const char *pokedex_filename = "DexSave.bin";
-  const char *pokeballs_filename = "BallSave.bin";
+  const char *player_filename = ".././save/PlayerSave.bin";
+  const char *pokedex_filename = ".././save/DexSave.bin";
+  const char *pokeballs_filename = ".././save/BallSave.bin";
 
   hc = GetStdHandle(STD_OUTPUT_HANDLE);
   system("cls");
