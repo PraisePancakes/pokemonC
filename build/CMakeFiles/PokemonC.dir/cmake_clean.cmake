@@ -5,6 +5,8 @@ file(REMOVE_RECURSE
   "CMakeFiles/PokemonC.dir/src/file.c.obj.d"
   "CMakeFiles/PokemonC.dir/src/gui.c.obj"
   "CMakeFiles/PokemonC.dir/src/gui.c.obj.d"
+  "CMakeFiles/PokemonC.dir/src/init.c.obj"
+  "CMakeFiles/PokemonC.dir/src/init.c.obj.d"
   "CMakeFiles/PokemonC.dir/src/main.c.obj"
   "CMakeFiles/PokemonC.dir/src/main.c.obj.d"
   "CMakeFiles/PokemonC.dir/src/player.c.obj"

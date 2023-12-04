@@ -18,7 +18,7 @@ typedef struct Player {
 void disp_inv_ball_list(Player *player);
 void disp_pokedex(Player *player, int *showcase_index);     // player.h
 Player *_init_player();                                     // player.h
-Player *get_player();                                       // player.h
+void get_player(Player *player);                            // player.h
 char *gen_player_uuid();                                    // player.h
 Ball *choose_ball(Player *player, int *ball_option);        // player.h
 PokeNode *add_to_pokedex(Pokemon *pokemon, PokeNode *head); // player.h

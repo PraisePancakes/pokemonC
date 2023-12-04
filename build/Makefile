@@ -200,6 +200,30 @@ src/gui.c.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles\PokemonC.dir\build.make CMakeFiles/PokemonC.dir/src/gui.c.s
 .PHONY : src/gui.c.s
 
+src/init.obj: src/init.c.obj
+.PHONY : src/init.obj
+
+# target to build an object file
+src/init.c.obj:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\PokemonC.dir\build.make CMakeFiles/PokemonC.dir/src/init.c.obj
+.PHONY : src/init.c.obj
+
+src/init.i: src/init.c.i
+.PHONY : src/init.i
+
+# target to preprocess a source file
+src/init.c.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\PokemonC.dir\build.make CMakeFiles/PokemonC.dir/src/init.c.i
+.PHONY : src/init.c.i
+
+src/init.s: src/init.c.s
+.PHONY : src/init.s
+
+# target to generate assembly for a file
+src/init.c.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\PokemonC.dir\build.make CMakeFiles/PokemonC.dir/src/init.c.s
+.PHONY : src/init.c.s
+
 src/main.obj: src/main.c.obj
 .PHONY : src/main.obj
 
@@ -290,6 +314,9 @@ help:
 	@echo ... src/gui.obj
 	@echo ... src/gui.i
 	@echo ... src/gui.s
+	@echo ... src/init.obj
+	@echo ... src/init.i
+	@echo ... src/init.s
 	@echo ... src/main.obj
 	@echo ... src/main.i
 	@echo ... src/main.s

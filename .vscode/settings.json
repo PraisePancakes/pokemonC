@@ -8,6 +8,7 @@
     "stdbool.h": "c",
     "gui.h": "c",
     "typeinfo": "c",
-    "file.h": "c"
+    "file.h": "c",
+    "time.h": "c"
   }
 }

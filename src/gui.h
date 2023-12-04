@@ -3,7 +3,6 @@
 #include "player.h"
 #include <windows.h>
 
-
 enum Colors {
   BLACK = 0,
   BLUE = 1,
@@ -29,12 +28,11 @@ HANDLE hc;
 void welcome(char *version); // gui.h
 unsigned short int get_menu(Player *player);
 void disp_walking();
-void style_printf_encountered(WORD text_color, Pokemon *pokemon); // gui.h
-void style_printf_fled(WORD text_color, Pokemon *pokemon);        // gui.h
-void style_printf(WORD text_color, char *string);                 // gui.h
-void style_printf_points(WORD text_color, Player *player);        // gui.h
-unsigned short int get_shop();                                    // gui.h
-unsigned short int get_ball_shop();                               // gui.h
-int get_showcase_choice(int showcase_index);                      // gui.h
+void style_printf(const char *format, WORD text_color, ...); // gui.h
+unsigned short int get_shop();                               // gui.h
+unsigned short int get_ball_shop();                          // gui.h
+int get_showcase_choice(int showcase_index);                 // gui.h
+void display_encountered(Pokemon *random_pokemon);
+void display_player_stats(Player *player);
 
 #endif

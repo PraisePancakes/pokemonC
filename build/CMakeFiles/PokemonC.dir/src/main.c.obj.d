@@ -40,8 +40,10 @@ CMakeFiles/PokemonC.dir/src/main.c.obj: \
  c:\mingw\include\stdlib.h c:\mingw\include\objidl.h \
  c:\mingw\include\cguid.h c:\mingw\include\olectlid.h \
  c:\mingw\include\oleauto.h c:\mingw\include\oaidl.h \
- c:\mingw\include\oleidl.h c:\mingw\include\conio.h \
- c:\mingw\include\stdio.h c:\mingw\include\sys/types.h \
- c:\mingw\include\unistd.h c:\mingw\include\io.h \
- c:\mingw\include\sys\types.h c:\mingw\include\stdint.h \
- c:\mingw\include\process.h c:\mingw\include\getopt.h
+ c:\mingw\include\oleidl.h \
+ C:\Users\aryas\OneDrive\Desktop\PokeC\src\init.h \
+ c:\mingw\include\conio.h c:\mingw\include\stdio.h \
+ c:\mingw\include\sys/types.h c:\mingw\include\unistd.h \
+ c:\mingw\include\io.h c:\mingw\include\sys\types.h \
+ c:\mingw\include\stdint.h c:\mingw\include\process.h \
+ c:\mingw\include\getopt.h

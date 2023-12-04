@@ -11,18 +11,16 @@ void disp_inv_ball_list(Player *player) {
   int ball_inv_amount = 1;
   int _iter = 1;
   BallNode *tmp = player->Bhead;
-
   while (tmp != NULL) {
-    SetConsoleTextAttribute(hc, BRIGHT_WHITE | FOREGROUND_INTENSITY);
-    printf("%d : %d x %s \n", _iter, ball_inv_amount, tmp->data->type);
+    style_printf(
+      "%d : %d x %s \n", BRIGHT_WHITE, _iter, ball_inv_amount, tmp->data->type);
     tmp = tmp->next;
     _iter++;
   }
-  SetConsoleTextAttribute(hc, DEFAULT);
 }
 
 void disp_pokedex(Player *player, int *showcase_index) {
-  style_printf(YELLOW, "[ CHOOSE A POKEMON ] \n");
+  style_printf("[ CHOOSE A POKEMON ] \n", YELLOW);
   PokeNode *tmp = player->Phead;
   while (tmp != NULL) {
     disp_pokemon(tmp->data, *showcase_index);
@@ -31,41 +29,13 @@ void disp_pokedex(Player *player, int *showcase_index) {
   }
 };
 
-Player *_init_player() {
-  Player *new_player = malloc(sizeof(Player));
 
-  if (new_player == NULL) {
-    fprintf(stderr, "ERROR :: MALLOC FAILED FOR NEW_PLAYER");
-    free(new_player);
-    exit(EXIT_FAILURE);
-  }
 
-  new_player->xp = 0;
-  new_player->Bhead = NULL;
-  new_player->Phead = NULL;
-  new_player->showcase = malloc(4);
-  new_player->showcase_type = malloc(4);
-  new_player->points = 0;
-
-  if (new_player->showcase == NULL) {
-    fprintf(stderr, "ERROR :: MALLOC FAILED FOR NEW_PLAYER->SHOWCASE");
-    free(new_player->showcase);
-    exit(EXIT_FAILURE);
-  }
-  strcpy(new_player->showcase, "TBA");
-
-  strcpy(new_player->showcase_type, "TBA");
-
-  return new_player;
-}
-
-Player *get_player() {
+void get_player(Player *new_player) {
   srand(time(NULL));
-  Player *new_player = _init_player();
-  new_player->Bhead = _init_ball_llist();
 
   char input[INPUT_BUFFER];
-  style_printf(YELLOW, "\n\n\n\n What is your username : \n");
+  style_printf("\n\n\n\n What is your username : \n", YELLOW);
   char *p_input = fgets(input, INPUT_BUFFER, stdin);
   strtok(p_input, "\n");
   new_player->username = malloc(strlen(p_input) + 1);
@@ -79,15 +49,14 @@ Player *get_player() {
   char *uuid = gen_player_uuid();
 
   strcpy(new_player->id, uuid);
-  SetConsoleTextAttribute(hc, BLUE | FOREGROUND_INTENSITY);
-  printf("USER : %s \n", new_player->username);
-  printf("YOUR UUID : %s \n", new_player->id);
-  printf("XP : %hu \n", new_player->xp);
-  printf("POINTS : %hu ", new_player->points);
-  SetConsoleTextAttribute(hc, DEFAULT);
-  getch();
+  style_printf("USER : %s\nYOUR UUID : %s\nXP : %hu\nPOINTS : %hu",
+               BLUE,
+               new_player->username,
+               new_player->id,
+               new_player->xp,
+               new_player->points);
 
-  return new_player;
+  getch();
 }
 
 char *gen_player_uuid() {
@@ -129,48 +98,29 @@ Ball *choose_ball(Player *player, int *ball_option) {
 
   *ball_option = option;
   system("cls");
-  style_printf(LIGHT_AQUA, "** You chose a ");
+  style_printf("** You chose a ", LIGHT_AQUA);
   if (strcmp(curr_ball->data->type, "pokeball") == 0) {
-    SetConsoleTextAttribute(hc, LIGHT_RED);
-    printf("%s", curr_ball->data->type);
-    SetConsoleTextAttribute(hc, DEFAULT);
+    style_printf("%s", LIGHT_RED, curr_ball->data->type);
   } else if (strcmp(curr_ball->data->type, "greatball") == 0) {
-    SetConsoleTextAttribute(hc, BLUE);
-    printf("%s", curr_ball->data->type);
-    SetConsoleTextAttribute(hc, DEFAULT);
+    style_printf("%s", BLUE, curr_ball->data->type);
   } else if (strcmp(curr_ball->data->type, "ultraball") == 0) {
-    SetConsoleTextAttribute(hc, LIGHT_YELLOW);
-    printf("%s", curr_ball->data->type);
-    SetConsoleTextAttribute(hc, DEFAULT);
+    style_printf("%s", LIGHT_YELLOW, curr_ball->data->type);
   } else if (strcmp(curr_ball->data->type, "masterball") == 0) {
-    SetConsoleTextAttribute(hc, PURPLE);
-    printf("%s", curr_ball->data->type);
-    SetConsoleTextAttribute(hc, DEFAULT);
+    style_printf("%s", PURPLE, curr_ball->data->type);
   };
 
-  SetConsoleTextAttribute(hc, LIGHT_AQUA);
-  printf(" with a catch chance of ");
+  style_printf(" with a catch chance of ", LIGHT_AQUA);
   if (curr_ball->data->catch_chance == 10) {
-    SetConsoleTextAttribute(hc, LIGHT_RED);
-    printf("%hu", curr_ball->data->catch_chance);
-    SetConsoleTextAttribute(hc, DEFAULT);
+    style_printf("%hu", LIGHT_RED, curr_ball->data->catch_chance);
   } else if (curr_ball->data->catch_chance == 30) {
-    SetConsoleTextAttribute(hc, BLUE);
-    printf("%hu", curr_ball->data->catch_chance);
-    SetConsoleTextAttribute(hc, DEFAULT);
+    style_printf("%hu", BLUE, curr_ball->data->catch_chance);
   } else if (curr_ball->data->catch_chance == 50) {
-    SetConsoleTextAttribute(hc, LIGHT_YELLOW);
-    printf("%hu", curr_ball->data->catch_chance);
-    SetConsoleTextAttribute(hc, DEFAULT);
+    style_printf("%hu", LIGHT_YELLOW, curr_ball->data->catch_chance);
   } else if (curr_ball->data->catch_chance == 100) {
-    SetConsoleTextAttribute(hc, PURPLE);
-    printf("%hu", curr_ball->data->catch_chance);
-    SetConsoleTextAttribute(hc, DEFAULT);
+    style_printf("%hu", PURPLE, curr_ball->data->catch_chance);
   };
 
-  SetConsoleTextAttribute(hc, LIGHT_AQUA);
-  printf(" ** \n");
-  SetConsoleTextAttribute(hc, DEFAULT);
+  style_printf(" ** \n", LIGHT_AQUA);
 
   return curr_ball->data;
 }
@@ -261,21 +211,21 @@ void throw_ball(Ball *chosen_ball, Pokemon *random_pokemon, Player *player) {
       player->points += random_pokemon->catch_difficulty + player->points + 50;
     }
 
-    SetConsoleTextAttribute(hc, LIGHT_AQUA | FOREGROUND_INTENSITY);
-    printf(" ** YOU CAUGHT %s ** POKEMON { NAME : %s , TYPE : %s } HAS BEEN "
-           "ADDED TO YOUR POKEDEX \n ",
-           random_pokemon->name,
-           random_pokemon->name,
-           random_pokemon->type);
-    SetConsoleTextAttribute(hc, DEFAULT);
+    style_printf(
+      " ** YOU CAUGHT %s ** POKEMON { NAME : %s , TYPE : %s } HAS BEEN "
+      "ADDED TO YOUR POKEDEX \n ",
+      LIGHT_AQUA,
+      random_pokemon->name,
+      random_pokemon->name,
+      random_pokemon->type);
 
-    SetConsoleTextAttribute(hc, FOREGROUND_GREEN | FOREGROUND_INTENSITY);
-    printf("YOU GAINED %hu XP and %hu points!",
-           abs(player->xp - previous_xp),
-           abs(player->points - previous_points));
-    SetConsoleTextAttribute(hc, DEFAULT);
+    style_printf("YOU GAINED %hu XP and %hu points!",
+                 GREEN,
+                 abs(player->xp - previous_xp),
+                 abs(player->points - previous_points));
+
   } else {
-    printf("~~ MISSED ~~");
+    style_printf(":: BALL MISSED ::", RED);
     // re throw or pokemon flees
   }
 }
@@ -318,22 +268,22 @@ void free_pokeballs(Player *player) {
 
 void handle_catching(Player *player, Pokemon *random_pokemon) {
   system("cls");
-  style_printf(LIGHT_YELLOW, "\n =-= CHOOSE A BALL TO USE =-= \n");
+  style_printf("\n =-= CHOOSE A BALL TO USE =-= \n", LIGHT_YELLOW);
   int ball_option = 0;
   Ball *chosen_ball = choose_ball(player, &ball_option);
 
   int action = 0;
-  style_printf(LIGHT_GREEN, "[1] throw ball ");
-  style_printf(LIGHT_YELLOW, "[2] change ball ");
-  style_printf(LIGHT_RED, "[3] run \n");
+  style_printf("[1] throw ball ", LIGHT_GREEN);
+  style_printf("[2] change ball ", LIGHT_YELLOW);
+  style_printf("[3] run \n", LIGHT_RED);
   scanf("%d", &action);
   while (action == 2) {
     system("cls");
-    style_printf(LIGHT_YELLOW, "\n =-= CHOOSE A BALL TO USE =-= \n");
+    style_printf("\n =-= CHOOSE A BALL TO USE =-= \n", LIGHT_YELLOW);
     chosen_ball = choose_ball(player, &ball_option);
-    style_printf(LIGHT_GREEN, "[1] throw ball ");
-    style_printf(LIGHT_YELLOW, "[2] change ball ");
-    style_printf(LIGHT_RED, "[3] run \n");
+    style_printf("[1] throw ball ", LIGHT_GREEN);
+    style_printf("[2] change ball ", LIGHT_YELLOW);
+    style_printf("[3] run \n", LIGHT_RED);
     scanf("%d", &action);
   }
 
@@ -341,7 +291,7 @@ void handle_catching(Player *player, Pokemon *random_pokemon) {
     throw_ball(chosen_ball, random_pokemon, player);
     player->Bhead = remove_ball(player, ball_option);
   } else if (action == 3) {
-    style_printf_fled(RED, random_pokemon);
-    style_printf(BRIGHT_WHITE, "press any key to go to the menu...");
+    style_printf("** YOU RAN AWAY :: %s FLED ** \n", RED, random_pokemon->name);
+    style_printf("press any key to go to the menu...", BRIGHT_WHITE);
   }
 }

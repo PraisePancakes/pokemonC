@@ -34,5 +34,11 @@
   "command": "C:\\MinGW\\bin\\gcc.exe   -g -o CMakeFiles\\PokemonC.dir\\src\\pokemon.c.obj -c C:\\Users\\aryas\\OneDrive\\Desktop\\PokeC\\src\\pokemon.c",
   "file": "C:/Users/aryas/OneDrive/Desktop/PokeC/src/pokemon.c",
   "output": "CMakeFiles/PokemonC.dir/src/pokemon.c.obj"
+},
+{
+  "directory": "C:/Users/aryas/OneDrive/Desktop/PokeC/build",
+  "command": "C:\\MinGW\\bin\\gcc.exe   -g -o CMakeFiles\\PokemonC.dir\\src\\init.c.obj -c C:\\Users\\aryas\\OneDrive\\Desktop\\PokeC\\src\\init.c",
+  "file": "C:/Users/aryas/OneDrive/Desktop/PokeC/src/init.c",
+  "output": "CMakeFiles/PokemonC.dir/src/init.c.obj"
 }
 ]

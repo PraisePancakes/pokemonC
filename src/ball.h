@@ -31,6 +31,4 @@ Ball *create_pokeball(char *type,
                       unsigned short int modifier,
                       unsigned short int price); // ball.h
 
-BallNode *_init_ball_llist(); // ball.h
-
 #endif
