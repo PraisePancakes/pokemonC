@@ -17,6 +17,44 @@ void style_printf(const char *format, WORD text_color, ...) {
   SetConsoleTextAttribute(hc, DEFAULT);
 }
 
+void display_ball_actions() {
+  style_printf("[1] throw ball ", LIGHT_GREEN);
+  style_printf("[2] change ball ", LIGHT_YELLOW);
+  style_printf("[3] run \n", LIGHT_RED);
+}
+
+void display_styled_ball_type(Ball *ball) {
+  if (strcmp(ball->type, "pokeball") == 0) {
+    style_printf("%s", LIGHT_RED, ball->type);
+  } else if (strcmp(ball->type, "greatball") == 0) {
+    style_printf("%s", BLUE, ball->type);
+  } else if (strcmp(ball->type, "ultraball") == 0) {
+    style_printf("%s", LIGHT_YELLOW, ball->type);
+  } else if (strcmp(ball->type, "masterball") == 0) {
+    style_printf("%s", PURPLE, ball->type);
+  };
+};
+
+void display_styled_ball_catch_chance(Ball *ball) {
+  if (ball->catch_chance == 10) {
+    style_printf("%hu", LIGHT_RED, ball->catch_chance);
+  } else if (ball->catch_chance == 30) {
+    style_printf("%hu", BLUE, ball->catch_chance);
+  } else if (ball->catch_chance == 50) {
+    style_printf("%hu", LIGHT_YELLOW, ball->catch_chance);
+  } else if (ball->catch_chance == 100) {
+    style_printf("%hu", PURPLE, ball->catch_chance);
+  };
+};
+
+void display_styled_ball_info(Ball *ball) {
+  style_printf("** You chose a ", LIGHT_AQUA);
+  display_styled_ball_type(ball);
+  style_printf(" with a catch chance of ", LIGHT_AQUA);
+  display_styled_ball_catch_chance(ball);
+  style_printf(" ** \n", LIGHT_AQUA);
+}
+
 void welcome(char *version) {
   style_printf(
     "\n =-=-=-= WELCOME TO POKEMON C %s =-=-=-= \n", YELLOW, version);

@@ -29,8 +29,6 @@ void disp_pokedex(Player *player, int *showcase_index) {
   }
 };
 
-
-
 void get_player(Player *new_player) {
   srand(time(NULL));
 
@@ -84,8 +82,6 @@ char *gen_player_uuid() {
 }
 
 Ball *choose_ball(Player *player, int *ball_option) {
-
-  disp_inv_ball_list(player);
   int option = 0;
   scanf("%d", &option);
 
@@ -97,31 +93,6 @@ Ball *choose_ball(Player *player, int *ball_option) {
   }
 
   *ball_option = option;
-  system("cls");
-  style_printf("** You chose a ", LIGHT_AQUA);
-  if (strcmp(curr_ball->data->type, "pokeball") == 0) {
-    style_printf("%s", LIGHT_RED, curr_ball->data->type);
-  } else if (strcmp(curr_ball->data->type, "greatball") == 0) {
-    style_printf("%s", BLUE, curr_ball->data->type);
-  } else if (strcmp(curr_ball->data->type, "ultraball") == 0) {
-    style_printf("%s", LIGHT_YELLOW, curr_ball->data->type);
-  } else if (strcmp(curr_ball->data->type, "masterball") == 0) {
-    style_printf("%s", PURPLE, curr_ball->data->type);
-  };
-
-  style_printf(" with a catch chance of ", LIGHT_AQUA);
-  if (curr_ball->data->catch_chance == 10) {
-    style_printf("%hu", LIGHT_RED, curr_ball->data->catch_chance);
-  } else if (curr_ball->data->catch_chance == 30) {
-    style_printf("%hu", BLUE, curr_ball->data->catch_chance);
-  } else if (curr_ball->data->catch_chance == 50) {
-    style_printf("%hu", LIGHT_YELLOW, curr_ball->data->catch_chance);
-  } else if (curr_ball->data->catch_chance == 100) {
-    style_printf("%hu", PURPLE, curr_ball->data->catch_chance);
-  };
-
-  style_printf(" ** \n", LIGHT_AQUA);
-
   return curr_ball->data;
 }
 
@@ -267,31 +238,27 @@ void free_pokeballs(Player *player) {
 }
 
 void handle_catching(Player *player, Pokemon *random_pokemon) {
-  system("cls");
-  style_printf("\n =-= CHOOSE A BALL TO USE =-= \n", LIGHT_YELLOW);
-  int ball_option = 0;
-  Ball *chosen_ball = choose_ball(player, &ball_option);
-
   int action = 0;
-  style_printf("[1] throw ball ", LIGHT_GREEN);
-  style_printf("[2] change ball ", LIGHT_YELLOW);
-  style_printf("[3] run \n", LIGHT_RED);
-  scanf("%d", &action);
-  while (action == 2) {
+  int ball_option = 0;
+
+  do {
     system("cls");
     style_printf("\n =-= CHOOSE A BALL TO USE =-= \n", LIGHT_YELLOW);
-    chosen_ball = choose_ball(player, &ball_option);
-    style_printf("[1] throw ball ", LIGHT_GREEN);
-    style_printf("[2] change ball ", LIGHT_YELLOW);
-    style_printf("[3] run \n", LIGHT_RED);
+    disp_inv_ball_list(player);
+    Ball *chosen_ball = choose_ball(player, &ball_option);
+    system("cls");
+    display_styled_ball_info(chosen_ball);
+    display_ball_actions();
     scanf("%d", &action);
-  }
-
-  if (action == 1) {
-    throw_ball(chosen_ball, random_pokemon, player);
-    player->Bhead = remove_ball(player, ball_option);
-  } else if (action == 3) {
-    style_printf("** YOU RAN AWAY :: %s FLED ** \n", RED, random_pokemon->name);
-    style_printf("press any key to go to the menu...", BRIGHT_WHITE);
-  }
+    if (action == 1) {
+      throw_ball(chosen_ball, random_pokemon, player);
+      player->Bhead = remove_ball(player, ball_option);
+    } else if (action == 3) {
+      system("cls");
+      style_printf(
+        "** YOU RAN AWAY :: %s FLED ** \n", RED, random_pokemon->name);
+      style_printf("press any key to go to the menu...", BRIGHT_WHITE);
+      break;
+    }
+  } while (action == 2);
 }

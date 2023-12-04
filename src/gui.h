@@ -34,5 +34,9 @@ unsigned short int get_ball_shop();                          // gui.h
 int get_showcase_choice(int showcase_index);                 // gui.h
 void display_encountered(Pokemon *random_pokemon);
 void display_player_stats(Player *player);
+void display_ball_actions();
+void display_styled_ball_type(Ball *ball);
+void display_styled_ball_catch_chance(Ball *ball);
+void display_styled_ball_info(Ball *ball);
 
 #endif
