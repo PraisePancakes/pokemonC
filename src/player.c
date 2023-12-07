@@ -118,7 +118,7 @@ void add_to_showcase(Player *player, int showcase_option) {
   int _iter = 1;
 
   PokeNode *tmp = player->Phead;
-  printf("SHOWCASE OPT: %d", showcase_option);
+  style_printf("SHOWCASE OPT: %d", LIGHT_AQUA, showcase_option);
   while (_iter != showcase_option) {
     tmp = tmp->next;
     _iter++;

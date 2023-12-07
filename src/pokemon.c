@@ -5,10 +5,11 @@
 #include <time.h>
 
 void disp_pokemon(Pokemon *pokemon, unsigned short int index) {
-  printf("\n POKEMON %d { NAME : %s , TYPE : %s } \n",
-         index,
-         pokemon->name,
-         pokemon->type);
+  style_printf("\n POKEMON %d { NAME : %s , TYPE : %s } \n",
+               LIGHT_AQUA,
+               index,
+               pokemon->name,
+               pokemon->type);
 };
 
 void shinify_pokemon(Pokemon *p_pokemon) {

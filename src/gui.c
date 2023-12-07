@@ -135,7 +135,7 @@ unsigned short int get_ball_shop() {
 
 int get_showcase_choice(int showcase_index) {
   int option = 0;
-  style_printf("ENTER A POKEMON NUMBER TO SHOWCASE : ", LIGHT_AQUA);
+  style_printf("ENTER A POKEMON NUMBER TO SHOWCASE : ", BRIGHT_WHITE);
   scanf("%d", &option);
   while (option >= showcase_index) {
     style_printf(":: ERROR CHOICE OUT OF RANGE RE-ENTER \n", RED);
