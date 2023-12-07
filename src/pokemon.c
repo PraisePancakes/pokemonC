@@ -12,6 +12,7 @@ void disp_pokemon(Pokemon *pokemon, unsigned short int index) {
 };
 
 void shinify_pokemon(Pokemon *p_pokemon) {
+  srand(time(NULL));
   const unsigned short int SHINY_DENOMINATOR = 20;
   const unsigned short int SHINY_NUMERATOR = 1;
   unsigned short int random_shiny_factor = rand() % SHINY_DENOMINATOR;
