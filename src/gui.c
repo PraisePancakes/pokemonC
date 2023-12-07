@@ -68,8 +68,14 @@ void display_encountered(Pokemon *random_pokemon) {
   if (random_pokemon->is_legendary) {
     style_printf("** YOU ENCOUNTERED %s ** \n", YELLOW, random_pokemon->name);
   } else {
-    style_printf(
-      "** YOU ENCOUNTERED %s ** \n", LIGHT_AQUA, random_pokemon->name);
+    if (random_pokemon->is_shiny) {
+      style_printf("** YOU ENCOUNTERED SHINY %s ** \n",
+                   LIGHT_YELLOW,
+                   random_pokemon->name);
+    } else {
+      style_printf(
+        "** YOU ENCOUNTERED %s ** \n", LIGHT_AQUA, random_pokemon->name);
+    }
   }
 };
 

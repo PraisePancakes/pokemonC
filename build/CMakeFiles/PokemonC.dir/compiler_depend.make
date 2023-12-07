@@ -355,6 +355,8 @@ CMakeFiles/PokemonC.dir/src/pokemon.c.obj: C:/Users/aryas/OneDrive/Desktop/PokeC
   C:/MinGW/include/sys/types.h \
   C:/MinGW/include/sys/bsdtypes.h \
   C:/MinGW/include/sys/time.h \
+  C:/MinGW/include/sys/types.h \
+  C:/MinGW/include/time.h \
   C:/MinGW/include/unknwn.h \
   C:/MinGW/include/w32api.h \
   C:/MinGW/include/wchar.h \

@@ -6,7 +6,8 @@ typedef struct Pokemon {
   char *name;
   char *type;
   bool is_legendary;
-  unsigned short int catch_difficulty; // 10 - 100 , if ball catch_chance >=
+  bool is_shiny;
+  unsigned short int catch_difficulty; // 10 - 100 , if ball catch_chance >= //
                                        // catch_difficulty ? success : fail
 } Pokemon;
 
@@ -29,5 +30,6 @@ void _init_pokemon_list(Pokemon *p_pokemon);                   // pokemon.h
 void _init_pokemon_catch_chance(Pokemon *p_pokemon);
 Pokemon *gen_rand_pokemon(Pokemon *p_pokemon,
                           unsigned short int size); // pokemon.h
+void shinify_pokemon(Pokemon *p_pokemon);
 
 #endif

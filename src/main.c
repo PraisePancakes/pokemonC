@@ -117,7 +117,7 @@ int main() {
         const unsigned short int POINTS_TEXT_STYLE =
           player->points > 0 ? GREEN : RED;
         style_printf(
-          "[YOU HAVE %hu POINTS]", POINTS_TEXT_STYLE, player->points);
+          "[YOU HAVE %hu POINTS] \n", POINTS_TEXT_STYLE, player->points);
         if (player->points < POKEBALL_PRICE) {
           style_printf("COME BACK WHEN YOU HAVE MORE POINTS!", LIGHT_RED);
           getch();

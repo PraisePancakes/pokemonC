@@ -40,4 +40,5 @@ CMakeFiles/PokemonC.dir/src/pokemon.c.obj: \
  c:\mingw\include\cguid.h c:\mingw\include\olectlid.h \
  c:\mingw\include\oleauto.h c:\mingw\include\oaidl.h \
  c:\mingw\include\oleidl.h c:\mingw\include\stdio.h \
- c:\mingw\include\sys/types.h
+ c:\mingw\include\sys/types.h c:\mingw\include\time.h \
+ c:\mingw\include\sys\types.h
