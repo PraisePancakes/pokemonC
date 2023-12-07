@@ -1,8 +1,9 @@
 #include "init.h"
-#define NUM_OF_POKEMONS 20
+#define NUM_OF_POKEMONS 39
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <time.h>
 
 void _init_pokemon_list(Pokemon *p_pokemon) {
   p_pokemon[0].name = "Pikachu";
@@ -84,9 +85,88 @@ void _init_pokemon_list(Pokemon *p_pokemon) {
   p_pokemon[19].name = "Clefairy";
   p_pokemon[19].type = "Fairy";
   p_pokemon[19].is_legendary = false;
+
+  //==================================================
+
+  p_pokemon[20].name = "Absol";
+  p_pokemon[20].type = "Dark";
+  p_pokemon[20].is_legendary = false;
+
+  p_pokemon[21].name = "Lugia";
+  p_pokemon[21].type = "Psychic/Flying";
+  p_pokemon[21].is_legendary = true;
+
+  p_pokemon[22].name = "Dialga";
+  p_pokemon[22].type = "Steel/Flying";
+  p_pokemon[22].is_legendary = true;
+
+  p_pokemon[23].name = "Zapdos";
+  p_pokemon[23].type = "Electric/Flying";
+  p_pokemon[23].is_legendary = true;
+
+  p_pokemon[24].name = "Ho-Oh";
+  p_pokemon[24].type = "Fire/Flying";
+  p_pokemon[24].is_legendary = true;
+
+  p_pokemon[25].name = "Suicune";
+  p_pokemon[25].type = "Water";
+  p_pokemon[25].is_legendary = true;
+
+  p_pokemon[26].name = "Regigigas";
+  p_pokemon[26].type = "Noraml";
+  p_pokemon[26].is_legendary = true;
+
+  p_pokemon[27].name = "Charizard";
+  p_pokemon[27].type = "Fire/Flying";
+  p_pokemon[27].is_legendary = false;
+
+  p_pokemon[28].name = "Charmeleon";
+  p_pokemon[28].type = "Fire";
+  p_pokemon[28].is_legendary = false;
+
+  p_pokemon[29].name = "Wartortle";
+  p_pokemon[29].type = "Water";
+  p_pokemon[29].is_legendary = false;
+
+  p_pokemon[30].name = "Caterpie";
+  p_pokemon[30].type = "Bug";
+  p_pokemon[30].is_legendary = false;
+
+  p_pokemon[31].name = "Metapod";
+  p_pokemon[31].type = "Bug";
+  p_pokemon[31].is_legendary = false;
+
+  p_pokemon[32].name = "Butterfree";
+  p_pokemon[32].type = "Bug/Flying";
+  p_pokemon[32].is_legendary = false;
+
+  p_pokemon[33].name = "Weedle";
+  p_pokemon[33].type = "Bug/Poison";
+  p_pokemon[33].is_legendary = false;
+
+  p_pokemon[34].name = "Kakuna";
+  p_pokemon[34].type = "Bug/Poison";
+  p_pokemon[34].is_legendary = false;
+
+  p_pokemon[35].name = "Beedrill";
+  p_pokemon[35].type = "Bug/Poison";
+  p_pokemon[35].is_legendary = false;
+
+  p_pokemon[36].name = "Pidgey";
+  p_pokemon[36].type = "Normal/Flying";
+  p_pokemon[36].is_legendary = false;
+
+  p_pokemon[37].name = "Pidgeotto";
+  p_pokemon[37].type = "Normal/Flying";
+  p_pokemon[37].is_legendary = false;
+
+  p_pokemon[38].name = "Pidgeot";
+  p_pokemon[38].type = "Normal/Flying";
+  p_pokemon[38].is_legendary = false;
 }
 
 void _init_pokemon_catch_chance(Pokemon *p_pokemon) {
+  srand(time(NULL));
   for (int i = 0; i < NUM_OF_POKEMONS; i++) {
     unsigned short int rand_mult;
     if (p_pokemon[i].is_legendary) {
@@ -152,6 +232,7 @@ BallNode *_init_ball_llist() {
     create_pokeball("ultraball", ULTRABALL_MOD, ULTRABALL_PRICE);
   Ball *starter_masterball =
     create_pokeball("masterball", MASTERBALL_MOD, MASTERBALL_PRICE);
+  printf("MASTERBALL CATCH CHANCE : %d", starter_masterball->catch_chance);
 
   head->data = starter_pokeball;
   head->next = first_node;

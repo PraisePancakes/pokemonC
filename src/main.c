@@ -11,7 +11,7 @@
 #include <unistd.h>
 #include <windows.h>
 
-#define NUM_OF_POKEMONS 20
+#define NUM_OF_POKEMONS 39
 /*
 ===== TO DO ====
 1 : gui style optional arguments  e.g.. style_printf(optional->struct, WORD
@@ -28,7 +28,6 @@ int main() {
   Pokemon *p_pokemons = &pokemons[0];
   _init_pokemon_list(p_pokemons);
   _init_pokemon_catch_chance(p_pokemons);
-
   hc = GetStdHandle(STD_OUTPUT_HANDLE);
   system("cls");
   char *version = "v0.0.1-alpha";
